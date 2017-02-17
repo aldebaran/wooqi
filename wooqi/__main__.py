@@ -10,15 +10,15 @@ def main(args=None):
     """
     Main
     """
-    print "haha"
-    print args
+    print "*********************************"
+    print "***** Wooqi tests sequencer *****"
+    print "*********************************"
     if args is None:
         args = sys.argv[1:]
     arguments = ""
-    for each in args:
-        arguments = arguments + " " + each
-    print "py.test" + arguments
-    os.system("py.test" + arguments)
-
+    if "--seq_config" in args:
+        for each in args:
+            arguments = arguments + " " + each
+        os.system("py.test" + arguments + " --spec --wooqi")
 if __name__ == '__main__':
     sys.exit(main())
