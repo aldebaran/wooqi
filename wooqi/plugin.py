@@ -3,9 +3,9 @@
 General plugin file
 """
 import pytest
-from src.plugin_fixtures import *
-from src.pytest_hooks import *
-from src import global_var
+from wooqi.src.plugin_fixtures import *
+from wooqi.src.pytest_hooks import *
+from wooqi.src import global_var
 
 
 def pytest_addoption(parser):
