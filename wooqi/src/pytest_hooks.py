@@ -73,7 +73,7 @@ def pytest_report_header(config):
     """
     Beginning of the test
     """
-    if config.getoption("--seq_config") != None:
+    if config.getoption("--seq_config") != None and config.getoption("--wooqi") is True:
         global_var['config'] = ConfigTest(config.getoption("--seq_config"))
         global_var['result'] = True
         if config.option.verbose > 0:

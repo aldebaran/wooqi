@@ -79,7 +79,7 @@ def init_logger(filename, directory, console_logger=True, maxSize=10000000):
             else:
                 level = logging.INFO
             # create rotating file handler, add formatter to ch and add ch to logger
-            handler = logging.handlers.RotatingFileHandler(os.path.join(dir, filename + '.log'),
+            handler = logging.handlers.RotatingFileHandler(os.path.join(directory, filename + '.log'),
                                                            maxBytes=maxSize, backupCount=5)
             handler.setFormatter(logging.Formatter(file_formatter_string))
             filter = SingleLevelFilter(level)

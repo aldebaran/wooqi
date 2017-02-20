@@ -25,10 +25,16 @@ def pytest_addoption(parser):
         default="test",
         help="Robot serial number"
     )
+    group.addoption(
+        "--wooqi",
+        action="store_true",
+        dest='inject_data',
+        help="Inject data during tests"
+    )
 
 
 @pytest.fixture(scope="session")
-def test_config(request):
+def test_config(request, wooqi):
     """
     Test config
     """
@@ -36,28 +42,51 @@ def test_config(request):
 
 
 @pytest.fixture(scope="session")
-def serial_number(request):
+def serial_number(request, wooqi):
     """
     Serial number
     """
     return request.config.getoption("--sn")
 
 
+@pytest.fixture(scope="session")
+def wooqi(request):
+    """
+    Check if the test is runned with wooqi
+    """
+    return request.config.getoption("--wooqi")
+
+
 @pytest.fixture()
-def test_info(request):
+def test_name(request, logger):
+    """
+    Return current test name
+    """
+    test = str(request.node).split("'")[1].split("[")
+    test_name = test[0]
+    if len(test) > 1:
+        if global_var['config'].exist(test[0] + "_" + test[1].replace("]", "").split('-')[0]):
+            test_name = test_name + "_" + test[1].replace("]", "").split('-')[0]
+        elif not global_var['config'].exist(test_name):
+            cpt = 0
+            while global_var['config'].exist('%s_%d' % (test[0], cpt)):
+                cpt = cpt + 1
+            num = int(test[1].replace("]", "").split('-')[0]) % cpt
+            test_name = test[0] + "_" + str(num)
+    return test_name
+
+
+@pytest.fixture()
+def test_info(request, logger, test_name):
     """
     Return current test info
     """
+    logger.debug("Get " + str(request.node).split("'")[1] + " infos")
     uut = None
     uut2 = None
     var = None
     test_dico = {}
     test = str(request.node).split("'")[1].split("[")
-    test_name = test[0]
-    if len(test) > 1:
-        if global_var['config'].exist(test[0] + "_" + test[1][0]):
-            test_name = test_name + "_" + test[1][0]
-
     uuts = global_var['config'].uut(test_name)
     uuts2 = global_var['config'].uut2(test_name)
     if len(test) > 1:
@@ -68,7 +97,6 @@ def test_info(request):
                     var = each
             try:
                 uut = int(var)
-                uut = None
             except:
                 uut = var
             test_dico["uuts"] = uuts
@@ -78,7 +106,6 @@ def test_info(request):
                     var = each
             try:
                 uut2 = int(var)
-                uut2 = None
             except:
                 uut2 = var
 
@@ -94,4 +121,5 @@ def test_info(request):
                 test_dico[param] = info
         elif param != "uut" and param != "uut2":
             test_dico[param] = global_var['config'].file_config[test_name][param]
+    logger.debug(test_dico)
     return test_dico

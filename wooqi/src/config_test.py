@@ -13,8 +13,7 @@ class ConfigTest(object):
     def __init__(self, config_path):
         try:
             parser = SafeConfigParser()
-            config_file = path.join(path.dirname(
-                __file__).replace("misc_tools", ""), config_path)
+            config_file = config_path
             parser.read(config_file)
         except Exception, error:
             msg = 'Problem while parsing configuration file %s (%s)' % (
@@ -30,11 +29,6 @@ class ConfigTest(object):
             file_config[section] = dict_tmp
         self.file_config = file_config
         self.current_test = None
-        pepper_config = ConfigParser()
-        pepper_config.read(path.join(path.dirname(
-            __file__).replace("misc_tools", ""), "robot_and_tools_config/pepper.ini"))
-        self.pepper_boards = pepper_config.get("y20", "boards_flashed").split(",")
-        self.pepper_joints = pepper_config.get("y20", "joints").split(",")
 
     def _get_paramater(self, param, uut, uut2, evaluate=True):
         """
@@ -185,12 +179,6 @@ class ConfigTest(object):
                 return self._get_range(values)
             else:
                 uuts = values.split("|")
-                if "all_pepper_boards" in uuts:
-                    uuts.remove("all_pepper_boards")
-                    return uuts + self.pepper_boards
-                if "all_pepper_joints" in uuts:
-                    uuts.remove("all_pepper_joints")
-                    return uuts + self.pepper_joints
                 return uuts
         except BaseException:
             return None
