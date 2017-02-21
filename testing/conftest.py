@@ -25,6 +25,7 @@ def executed_tests(request, test_config_parser, logger):
         logger.info("Executed tests = " + str(executed_tests))
         logger.info("Required test = " + str(required_list))
         assert executed_tests == required_list, fail_message
+        logger.info("TEST PASSED")
 
     request.addfinalizer(analyze_result)
     return executed_tests
