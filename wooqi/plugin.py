@@ -14,7 +14,7 @@ def pytest_addoption(parser):
     """
     group = parser.getgroup('general')
     group.addoption(
-        "--seq_config",
+        "--seq-config",
         default=None,
         action="store",
         help="Test file config"
@@ -38,7 +38,7 @@ def test_config(request, wooqi):
     """
     Test config
     """
-    return request.config.getoption("--seq_config")
+    return request.config.getoption("--seq-config")
 
 
 @pytest.fixture(scope="session")

@@ -16,7 +16,7 @@ def main(args=None):
     if args is None:
         args = sys.argv[1:]
     arguments = ""
-    if "--seq_config" in args:
+    if "--seq-config" in args:
         for each in args:
             arguments = arguments + " " + each
         os.system("py.test" + arguments + " --spec --wooqi")
