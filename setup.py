@@ -8,7 +8,7 @@ from setuptools import setup, find_packages
 # or python setup.py develop
 setup(
     version="0.1",
-    name="pytest-wooqi",
+    name="wooqi",
     description="Pytest plugin allowing to parametrize all the test sequence thanks to a config file",
     packages=find_packages(),
     entry_points={
