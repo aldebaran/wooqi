@@ -23,13 +23,13 @@ def pytest_addoption(parser):
         "--sn",
         action="store",
         default="test",
-        help="Robot serial number"
+        help="Sample serial number or name"
     )
     group.addoption(
         "--wooqi",
         action="store_true",
-        dest='inject_data',
-        help="Inject data during tests"
+        dest='wooqi tag',
+        help="wooqi tag to check if the test is runned thanks to wooqi"
     )
 
 
