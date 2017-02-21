@@ -96,6 +96,7 @@ def pytest_generate_tests(metafunc):
 
         # Test called one time or more
         elif global_var['config'].exist('%s_0' % metafunc.function.__name__):
+            metafunc.function.__dict__["add_call"] = True
             uut_list = []
             uut2_list = []
             cpt = 0
@@ -104,7 +105,7 @@ def pytest_generate_tests(metafunc):
                 metafunc.addcall()
                 # Manage loop option
                 sequencer_features.init_loop_option(metafunc, cpt)
-                # Get uut and uu2 when test is called
+                # Get uut and uut2 when test is called
                 uuts = sequencer_features.get_uuts(metafunc, cpt)
                 uut_list += uuts[0]
                 uut2_list += uuts[1]

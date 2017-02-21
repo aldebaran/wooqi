@@ -38,6 +38,7 @@ def init_loop_option(pytest_metafunc, cpt=None):
             loop_iter -= 1
         test_order = int(global_var['config'].file_config[test_name]['test_order'])
         if loop_tests[0] <= test_order <= loop_tests[1]:
+            pytest_metafunc.function.__dict__["add_call"] = True
             pytest_metafunc.function.__dict__["loop"] = True
             # Add call for each test performed after the first
             for nb in range(0, loop_iter):
@@ -152,15 +153,19 @@ def filter_order_tests(items):
             first_arg = None
         config_test_name, iter_number = item_loop_option_analyse(item, basic_test_name, first_arg)
 
-        # If len(item_args) is 1, item_args[0] is a uut and he exist
-        if len(item_args) > 1:
+        # If len(item_args) is 1, item_args[0] is a uut and he exists
+        if "add_call" in item.keywords.__dict__["_markers"].keys():
+            uut_index = 1
+        else:
+            uut_index = 0
+        if len(item_args) > uut_index:
             # Verify uut
-            if item_args[1] not in global_var['config'].uut(config_test_name):
+            if item_args[uut_index] not in global_var['config'].uut(config_test_name):
                 # uut not used for this test
                 continue
             # Verify uut2
             if len(item_args) > 2:
-                if item_args[2] not in global_var['config'].uut2(config_test_name):
+                if item_args[uut_index + 1] not in global_var['config'].uut2(config_test_name):
                     # uut2 not used for this test
                     continue
         test_order = int(global_var['config'].file_config[config_test_name]['test_order'])
