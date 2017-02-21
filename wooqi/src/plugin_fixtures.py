@@ -9,7 +9,6 @@ import pytest
 from wooqi.src.logger import init_logger
 from wooqi.src import global_var
 
-
 def read_cfg(cfg_file):
     """
     Read config file
@@ -37,6 +36,12 @@ def test_config_parser(test_config):
     else:
         return None
 
+@pytest.fixture(scope="session")
+def test_sequence_name(test_config):
+    """
+        Return the name of the test according to the .ini file
+    """
+    return os.path.basename(test_config).replace(".ini", "")
 
 @pytest.fixture(scope="session")
 def test_time():
@@ -47,18 +52,58 @@ def test_time():
 
 
 @pytest.fixture(scope="session")
-def log_folder(serial_number):
+def wooqi_conf(request):
+    """
+    Wooqi configuration file read from specific project which is using wooqi
+    Return a dictionary containing all configuration attributes
+    """
+    config_file_path = os.getcwd() + "/wooqi_conf.cfg"
+    if os.path.isfile(config_file_path):
+        config = read_cfg(config_file_path)
+    else:
+        config = None
+    return config
+
+
+@pytest.fixture(scope="session")
+def log_folder(serial_number, wooqi_conf, test_time, test_sequence_name):
     """
     return the path of the log folder
     """
-    os.getcwd()
+    current_dir = os.getcwd()
+    # Get log configuration from the specific project which is using wooqi
+    if wooqi_conf is not None:
+        if wooqi_conf.has_option("LOGS", "LOGS_DIRECTORY"):
+            # If no specific configuration, default report path is /reports/<SN>/
+            log_conf = wooqi_conf.get("LOGS", "LOGS_DIRECTORY").split()
+        else:
+            log_conf = ["sn"]
+    else:
+        # If no specific configuration, default report path is /reports/<SN>/
+        log_conf = ["sn"]
+
     if global_var['config'] != None:
-        list_dir = os.listdir(os.getcwd())
-        if "reports" not in list_dir:
-            os.makedirs(os.getcwd() + "/reports/")
-        if serial_number not in os.listdir(os.getcwd() + "/reports/"):
-            os.makedirs(os.getcwd() + "/reports/" + serial_number + "/")
-        folder_path = os.getcwd() + "/reports/" + serial_number + "/"
+        # All reports are in reports/ directory
+        if not os.path.isdir(current_dir + "/reports"):
+            os.makedirs(current_dir + "/reports/")
+        folder_path = current_dir + "/reports/"
+
+        for item in log_conf:
+            # Add serial number to log directory
+            if item == "sn":
+                if not os.path.isdir(folder_path + serial_number):
+                    os.makedirs(folder_path + serial_number)
+                folder_path += serial_number + "/"
+            # Add date to log directory
+            elif item == "date":
+                if not os.path.isdir(folder_path + test_time):
+                    os.makedirs(folder_path + test_time)
+                folder_path += test_time + "/"
+            # Add sequence file name to log directory
+            elif item == "seq_name":
+                if not os.path.isdir(folder_path + test_sequence_name):
+                    os.makedirs(folder_path + test_sequence_name)
+                folder_path += test_sequence_name + "/"
         return folder_path
     else:
         return None
