@@ -3,11 +3,12 @@ pip package setup
 """
 
 from setuptools import setup, find_packages
+from wooqi import __version__
 
 # For development purposes, install it with pip install -user -e
 # or python setup.py develop
 setup(
-    version="0.2",
+    version=__version__,
     name="wooqi",
     description="Pytest plugin allowing to parametrize all the test sequence thanks to a config file",
     packages=find_packages(),
