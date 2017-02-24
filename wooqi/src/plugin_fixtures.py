@@ -9,6 +9,7 @@ import pytest
 from wooqi.src.logger import init_logger
 from wooqi.src import global_var
 
+
 def read_cfg(cfg_file):
     """
     Read config file
@@ -36,12 +37,14 @@ def test_config_parser(test_config):
     else:
         return None
 
+
 @pytest.fixture(scope="session")
 def test_sequence_name(test_config):
     """
         Return the name of the test according to the .ini file
     """
     return os.path.basename(test_config).replace(".ini", "")
+
 
 @pytest.fixture(scope="session")
 def test_time():

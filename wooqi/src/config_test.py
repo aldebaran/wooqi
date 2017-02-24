@@ -3,8 +3,7 @@
 TestConfig Class
 """
 
-from ConfigParser import SafeConfigParser, ConfigParser
-from os import path
+from ConfigParser import SafeConfigParser
 
 
 class ConfigTest(object):
@@ -14,12 +13,16 @@ class ConfigTest(object):
         try:
             parser = SafeConfigParser()
             config_file = config_path
-            parser.read(config_file)
+            file_parse = parser.read(config_file)
         except Exception, error:
             msg = 'Problem while parsing configuration file %s (%s)' % (
                 config_file, error)
             print msg
             raise
+        if len(file_parse) == 0:
+            self.config_file_exists = False
+        else:
+            self.config_file_exists = True
 
         file_config = {}
         for section in parser.sections():
