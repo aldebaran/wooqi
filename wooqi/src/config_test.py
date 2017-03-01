@@ -4,6 +4,8 @@ TestConfig Class
 """
 
 from ConfigParser import SafeConfigParser
+import os
+from sys import exit
 
 
 class ConfigTest(object):
@@ -93,6 +95,27 @@ class ConfigTest(object):
         second_int = int(string[index_2 + 1:index_3])
         return range(first_int, second_int)
 
+    def _get_folder(self, string):
+        """
+        Return a list containing the names of the elements from the given dir.
+        Directory must be given with absolute path
+        Returned elements are given with absolute path.
+        Returned elements can be directories as well as files.
+        """
+        index_1, index_2 = 0, 0
+        for index, each in enumerate(string):
+            if each == "(":
+                index_1 = index
+            elif each == ")":
+                index_2 = index
+        folder_path = string[index_1 + 1:index_2]
+        if os.path.isdir(folder_path):
+            elements = map(os.path.abspath, [folder_path + "/" + s \
+                                             for s in os.listdir(folder_path)] )
+            return elements
+        else:
+            exit("Folder parameter in 'uut' is not a valid directory.")
+
     def loop_infos(self):
         """
         Get loop infos
@@ -180,6 +203,8 @@ class ConfigTest(object):
             values = self.file_config[test_name]['uut']
             if "range" in values:
                 return self._get_range(values)
+            elif "folder" in values:
+                return self._get_folder(values)
             else:
                 uuts = values.split("|")
                 return uuts
@@ -194,6 +219,8 @@ class ConfigTest(object):
             values = self.file_config[test_name]['uut2']
             if "range" in values:
                 return self._get_range(values)
+            elif "folder" in values:
+                return self._get_folder(values)
             else:
                 return values.split("|")
         except BaseException:
