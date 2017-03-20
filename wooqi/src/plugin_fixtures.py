@@ -41,9 +41,12 @@ def test_config_parser(test_config):
 @pytest.fixture(scope="session")
 def test_sequence_name(test_config):
     """
-        Return the name of the test according to the .ini file
+    Return the name of the test according to the .ini file
     """
-    return os.path.basename(test_config).replace(".ini", "")
+    if global_var['config'] != None:
+        return os.path.basename(test_config).replace(".ini", "")
+    else:
+        return None
 
 
 @pytest.fixture(scope="session")
