@@ -286,3 +286,12 @@ if [ $? = 0 ];then
 else
     echo -e "- Looping feature | Different tests with UUTs --> ${RED}FAILED${NC}"
 fi
+
+va=$(wooqi --seq-config testing/loop_feature/tests/loop_same_test_uut.ini --sn wooqi_tests -s)
+
+echo -e $va | grep --quiet "TEST PASSED"
+if [ $? = 0 ];then
+    echo -e "- Looping feature | Same test with UUTs --> ${GREEN}PASSED${NC}"
+else
+    echo -e "- Looping feature | Same test with UUTs --> ${RED}FAILED${NC}"
+fi

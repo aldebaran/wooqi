@@ -28,7 +28,7 @@ def init_loop_option(pytest_metafunc, cpt=None):
     Generate test call according to loop option
     """
     if global_var['config'].loop_infos() is not None:
-        loop_tests = eval(global_var['config'].loop_infos()[0])
+        loop_tests = global_var['config'].loop_infos()[0]
         loop_iter = int(global_var['config'].loop_infos()[1])
         if cpt is None:
             test_name = pytest_metafunc.function.__name__
@@ -36,8 +36,10 @@ def init_loop_option(pytest_metafunc, cpt=None):
             test_name = '%s_%d' % (pytest_metafunc.function.__name__, cpt)
             # addcall function has already been used in the first loop
             loop_iter -= 1
-        test_order = int(global_var['config'].file_config[test_name]['test_order'])
-        if loop_tests[0] <= test_order <= loop_tests[1]:
+        test_order = global_var['config'].file_config[test_name]['test_order']
+        first_loop_test_order = global_var['config'].file_config[loop_tests[0]]["test_order"]
+        last_loop_test_order = global_var['config'].file_config[loop_tests[1]]["test_order"]
+        if first_loop_test_order <= test_order <= last_loop_test_order:
             pytest_metafunc.function.__dict__["add_call"] = True
             pytest_metafunc.function.__dict__["loop"] = True
             # Add call for each test performed after the first
@@ -105,15 +107,18 @@ def item_loop_option_analyse(item, test_name, first_arg):
             test_name = '%s_%s' % (test_name, first_arg)
         # Test defined multiple time in config file but not is the first iteration
         else:
-            loop_tests = eval(global_var['config'].loop_infos()[0])
+            loop_tests = global_var['config'].loop_infos()[0]
             cpt = 0
             nb_test_in_loop = 0
             first_test_in_loop = None
             # Count the number of test defined in config file
             while global_var['config'].exist('%s_%d' % (test_name, cpt)):
-                test_order = int(global_var['config'].file_config['%s_%d' %
-                                                                  (test_name, cpt)]['test_order'])
-                if loop_tests[0] <= test_order <= loop_tests[1]:
+                test_order = global_var['config'].file_config['%s_%d' %
+                                                              (test_name, cpt)]['test_order']
+                first_loop_test_order = global_var[
+                    'config'].file_config[loop_tests[0]]["test_order"]
+                last_loop_test_order = global_var['config'].file_config[loop_tests[1]]["test_order"]
+                if first_loop_test_order <= test_order <= last_loop_test_order:
                     nb_test_in_loop += 1
                     if first_test_in_loop is None:
                         first_test_in_loop = cpt
@@ -172,7 +177,8 @@ def filter_order_tests(items):
         if iter_number != 0:
             # Create second list only with test in loop option after the first iteration
             if not list_loop_temp:
-                test_order_last_loop_test = eval(global_var['config'].loop_infos()[0])[1]
+                test_order_last_loop_test = global_var['config'].file_config[
+                    global_var['config'].loop_infos()[0][1]]["test_order"]
                 # Add a fake item who the test_oder is just after the last test of looping option
                 list_temp.append([test_order_last_loop_test + 0.5, 'LOOP_TEST'])
             list_loop_temp.append([iter_number, test_order, item])

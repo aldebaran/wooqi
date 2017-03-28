@@ -2,10 +2,10 @@
 """
 TestConfig Class
 """
-
-from ConfigParser import SafeConfigParser
 import os
 from sys import exit
+import collections
+from ConfigParser import SafeConfigParser
 
 
 class ConfigTest(object):
@@ -26,12 +26,14 @@ class ConfigTest(object):
         else:
             self.config_file_exists = True
 
-        file_config = {}
+        file_config = collections.OrderedDict()
         for section in parser.sections():
             dict_tmp = {}
             for option in parser.options(section):
                 dict_tmp[option] = parser.get(section, option)
             file_config[section] = dict_tmp
+            file_config[section]["test_order"] = file_config.keys().index(section) + 1
+
         self.file_config = file_config
         self.current_test = None
 
@@ -110,8 +112,8 @@ class ConfigTest(object):
                 index_2 = index
         folder_path = string[index_1 + 1:index_2]
         if os.path.isdir(folder_path):
-            elements = map(os.path.abspath, [folder_path + "/" + s \
-                                             for s in os.listdir(folder_path)] )
+            elements = map(os.path.abspath, [folder_path + "/" + s
+                                             for s in os.listdir(folder_path)])
             return elements
         else:
             exit("Folder parameter in 'uut' is not a valid directory.")
@@ -123,7 +125,7 @@ class ConfigTest(object):
         if 'test_info' not in self.file_config.keys():
             return None
         elif "loop_tests" in self.file_config['test_info']:
-            loop_tests = self.file_config['test_info']['loop_tests']
+            loop_tests = self.file_config['test_info']['loop_tests'].split("|")
             loop_iter = self.file_config['test_info']['loop_iter']
             return loop_tests, loop_iter
         else:

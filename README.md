@@ -70,10 +70,9 @@ Other sections are referring to test steps or actions. Any step or action can be
 test_steps directory simply by writing its name as the section name.  
 Example: `[test_battery_charge]`. Some attributes of this section are used to organize this step in
 the test, and some others are given to the step function as parameters.
+The step order is defined by the order of definition in the .ini
 
 Here is a list of attributes that could be written in step/action sections:
-* **test_order** : (mandatory) As step are called one after another, an order must be specified
-  thanks to this argument. Warning the order is not defined by the order of definition in the .ini
 * **post_fail** : *TBC*
 * **uut** : *TBC*
 * **uut2** : *TBC*
@@ -85,15 +84,12 @@ If you need to call the same test step several times, there is a special syntax.
 at the end of the test name, increasing the number "X from "0" as follow :
 ```ini
 [test_foo_0] ; Start with 0
-test_order=10
 uut=dummy1
 
 [test_foo_1] ; Continue with 1
-test_order=20
 uut=dummy2
 
 [test_foo_X] ; and so on...
-test_order=30
 uut=dummy3
 ```
 
@@ -101,29 +97,24 @@ uut=dummy3
 
 You must add two attributes in the `[test_info]` section:
 
-* **loop_tests=(a,b)** where a and b are the test_order numbers of the first and the last steps of the loop.
+* **loop_tests=a|b** where a and b are the names of the first and the last steps of the loop.
 * **loop_iter=k** where k is the number of iterations of the loop.
 
 In the following example, the sequence *test_b --> test_c --> test_d* will be repeated 2 times:
 ```ini
 [test_info]
-loop_tests=(20, 40)
+loop_tests=test_b|test_d
 loop_iter=2
 
 [test_a]
-test_order=10
 
 [test_b]
-test_order=20
 
 [test_c]
-test_order=30
 
 [test_d]
-test_order=40
 
 [test_e]
-test_order=50
 ```
 
 ### Run a test sequence
