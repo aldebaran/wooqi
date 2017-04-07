@@ -2,7 +2,26 @@
 
 ## Introduction
 
-*TBC*
+**Wooqi** is a plugin for the [Python](https://www.python.org) module named [pytest](http://pytest.org). It allows to code tests in a very special way. It is a usefull tool to manage a big database of tests, as it simplifies their creation, their maintenance, and their execution.
+
+Wooqi hacks the standard use of pytest to introduce new mechanics, in order to apply a precise testing methodology which can be described by the following key points:
+
+* There is a *test steps* database.
+* There is a *test sequences* database, where each sequence is composed of one or several test steps picked from the *test steps* database.
+* There are some *common tools* (custom python classes or functions) and *fixtures* (introduced by pytest) which all can be used by any test step.
+* Users can execute a single test sequence with a single command line.
+* All reports and logs of test sequences are saved in a common *reports* database.
+
+Creation of logs, parametrization of tests, report reading, and tests scheduling are some examples of the things which are simplified with wooqi. Moreover, the generic aspect of this tool allows to use it for any kind of target under test, as long as you can respect its methodology.
+
+Finally, it is important to note that **Wooqi** does not contain any test itself. It is a just a tool to execute tests which are written in what we call a **Wooqi project**. In this way, you can have several **Wooqi projects** on your machine, each one having its own specific features, while using only one tool (the **Wooqi** plugin) to execute any test in any project.
+
+**Contact:**  
+If you need some help about Wooqi, or if you want to contribute, please contact one of the following core developers:
+
+* Sebastien MARTIN - <semartin@softbankrobotics.com>
+* Antoine MARTIN - <amartin@softbankrobotics.com>
+* Romain TAPREST - <rtaprest@softbankrobotics.com>
 
 ## Installation
 
@@ -29,23 +48,42 @@ your own project containing your own tests, which will be read and executed by W
 
 Create an empty directory with the name of your choice, for instance *my_wooqi_project*.
 In this directory, create, at least, the following sub-directories:
-* test_sequences
-* test_steps
-* fixtures
-* misc_tools
+
+* :file_folder: test_sequences
+* :file_folder: test_actions
+* :file_folder: test_steps
+* :file_folder: fixtures
+* :file_folder: misc_tools
 
 And the following files:
-* conftest.py *(can be empty at first)*
+* :page_facing_up: conftest.py *(can be empty at first)*
 
 ### Write tests
 
 #### Write a test step
 
-*TBC*
+A test step is simply a python function with an **assertion** in it. The following rules must be observed:
+
+* One test step is represented by one function.
+* A test step must be written in a file in the *test_steps* directory. The name of this file must start with "*test_*".
+* A test step name must start with "*step_*"
+* Assertions in a test step must observe the [guidelines of the pytest module](https://docs.pytest.org/en/latest/assert.html).
+* Arguments of a test step must be picked from [existing fixtures](#write-your-own-fixtures) and the **Wooqi** special arguments given below.  
+  For more information about these special arguments, please see the "*test sequences*" section of this documentation.
+  * uut
+  * uut2
+  * test_info
 
 #### Write an action
 
-*TBC*
+An action is almost the same than a test step, except it does not necessarily have an assertion. The following rules must be observed:
+
+* One action is represented by one function.
+* An action must be written in a file in the *test_actions* directory. The name of this file must start with "*action_*".
+* An action name must start with "*action_*"
+* An action can contain an assertion like a test step but this is not mandatory.
+* Arguments of an action follow the same rule than for a test step.
+
 
 #### Write a test sequence
 
@@ -61,6 +99,7 @@ attr2=value2
 
 There is one initial section that could be present in these configuration files: **[test_info]**
 It contains information about the test itself. Following attributes can be present in this section:
+
 * **loop_tests** : Used to make loops in the sequence.
   Please refer to the [dedicated section](#make-loops-in-the-test-sequence)
 * **loop_iter** : Used to make loops in the sequence.
@@ -73,6 +112,7 @@ the test, and some others are given to the step function as parameters.
 The step order is defined by the order of definition in the .ini
 
 Here is a list of attributes that could be written in step/action sections:
+
 * **post_fail** : *TBC*
 * **uut** : *TBC*
 * **uut2** : *TBC*
@@ -119,22 +159,20 @@ loop_iter=2
 
 ### Run a test sequence
 
-To launch a test, move to the depository root and launch the following command:
+To launch a test, move to the root of your project depository and run the following command:
 
-    wooqi --seq-config TEST_SEQUENCE_FILE --ip ROBOT_IP --sn ROBOT_SN [--comment COMMENT] [-s] [-k TEST_NAME] [--lf]
+    wooqi --seq-config TEST_SEQUENCE_FILE --sn SAMPLE_NAME [-s] [-k TEST_NAME] [--lf]
 
 Where:
-* **[--ip ROBOT_IP]** IP adress of the robot. Default is “127.0.0.1”.
-* **[--seq-config TEST_SEQUENCE_FILE]** (required) Config file of the test sequence
-* **[--sn ROBOT_SN]** (required) Sample Name. Used to name the logs.
-* **[--comment COMMENT]** Add a comment to the run (will be saved in the report)
-* **[-s]** Display logs and "print" output in the console.
+* **[--seq-config TEST_SEQUENCE_FILE]** (required) relative path to the .ini file of the test sequence
+* **[--sn SAMPLE_NAME]** (required) Sample Name. Used to name the logs.
+* **[-s]** Display logs and print output in the console.
 * **[-k TEST_NAME]** Execute the specified tests only (name can be incomplete)
 * **[-lf]** Execute the last failed test only.
 
 Example:
 
-    wooqi --seq-config test_sequences/head/sw_version.ini --ip 10.0.206.235 --sn myRobot --comment "My first run!"
+    wooqi --seq-config test_sequences/folder1/seq1.ini --sn mySample
 
 ### Advanced functionalities
 
