@@ -1,1 +1,2 @@
 include wooqi/src/logger.cfg
+graft wooqi/project_template

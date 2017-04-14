@@ -46,17 +46,21 @@ your own project containing your own tests, which will be read and executed by W
 
 ### Create a new project
 
-Create an empty directory with the name of your choice, for instance *my_wooqi_project*.
-In this directory, create, at least, the following sub-directories:
+To automatically initialize a new Wooqi project, use the following command line:
 
-* :file_folder: test_sequences
-* :file_folder: test_actions
-* :file_folder: test_steps
-* :file_folder: fixtures
-* :file_folder: misc_tools
+    wooqi --init-project MY_PROJECT
 
-And the following files:
-* :page_facing_up: conftest.py *(can be empty at first)*
+Replace MY_PROJECT by the path of your project directory (can be relative or absolute).
+This creates the necessary sub-directories and files for your project. Most of the files are
+empty, as they are just some examples.
+
+The tree view of the created project is just a suggestion and is not mandatory for Wooqi to work.
+You can customize your Wooqi project as you like, as long as you respect the following rules (please
+read the next sections to fully understand these rules):
+
+1. Fixtures must be imported in *conftest.py* at the root of the project.
+2. *setup.cfg* must be at the root of the project. (Please see **Advanced functionalities** section)
+3. Test steps, actions, and sequences must respect the rules that are given in their dedicated section.
 
 ### Write tests
 
@@ -65,32 +69,37 @@ And the following files:
 A test step is simply a python function with an **assertion** in it. The following rules must be observed:
 
 * One test step is represented by one function.
-* A test step must be written in a file in the *test_steps* directory. The name of this file must start with "*test_*".
-* A test step name must start with "*step_*"
+* A test step can be written in a file in any directory (default directory is *test_steps*).
+  The name of this file must start with "*test_*".
+* A test step name must start with "*test_*"
 * Assertions in a test step must observe the [guidelines of the pytest module](https://docs.pytest.org/en/latest/assert.html).
 * Arguments of a test step must be picked from [existing fixtures](#write-your-own-fixtures) and the **Wooqi** special arguments given below.  
   For more information about these special arguments, please see the "*test sequences*" section of this documentation.
   * uut
   * uut2
   * test_info
+* A test step can use any python function from any other file as long as it is imported. It is standard python !
 
 #### Write an action
 
-An action is almost the same than a test step, except it does not necessarily have an assertion. The following rules must be observed:
+An action is almost the same than a test step, except it does not necessarily have an assertion.
+The following rules must be observed:
 
 * One action is represented by one function.
-* An action must be written in a file in the *test_actions* directory. The name of this file must start with "*action_*".
+* An action can be written in a file in any directory (default directory is *actions_step*).
+  The name of this file must start with "*actions_*".
 * An action name must start with "*action_*"
 * An action can contain an assertion like a test step but this is not mandatory.
 * Arguments of an action follow the same rule than for a test step.
-
+* An action can use any python function from any other file as long as it is imported. It is standard python !
 
 #### Write a test sequence
 
 ##### Basics
 
- A test is described in a configuration file (.ini).
- As a result this file contains several sections with some attributes, like this:
+ A test is described in a configuration file (*.ini*). This file can be in any directory (default is
+*sequences*). As a result this file contains several sections with some attributes, like this:
+
 ```ini
 [my_section]
 attr1=value1
@@ -122,6 +131,7 @@ Here is a list of attributes that could be written in step/action sections:
 
 If you need to call the same test step several times, there is a special syntax. You must add "\_X"
 at the end of the test name, increasing the number "X from "0" as follow :
+
 ```ini
 [test_foo_0] ; Start with 0
 uut=dummy1
@@ -141,6 +151,7 @@ You must add two attributes in the `[test_info]` section:
 * **loop_iter=k** where k is the number of iterations of the loop.
 
 In the following example, the sequence *test_b --> test_c --> test_d* will be repeated 2 times:
+
 ```ini
 [test_info]
 loop_tests=test_b|test_d
@@ -164,6 +175,7 @@ To launch a test, move to the root of your project depository and run the follow
     wooqi --seq-config TEST_SEQUENCE_FILE --sn SAMPLE_NAME [-s] [-k TEST_NAME] [--lf]
 
 Where:
+
 * **[--seq-config TEST_SEQUENCE_FILE]** (required) relative path to the .ini file of the test sequence
 * **[--sn SAMPLE_NAME]** (required) Sample Name. Used to name the logs.
 * **[-s]** Display logs and print output in the console.
