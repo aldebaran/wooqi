@@ -56,7 +56,8 @@ def main(args=None):
         print "*********************************"
         print "***** Wooqi tests sequencer *****"
         print "*********************************"
-        os.system("py.test " + arguments + " --spec --wooqi")
+        exit_code = os.system("py.test " + arguments + " --spec --wooqi")
+        return exit_code >> 8
     else:
         print "Usage: "
         print "* Launch a test sequence:"
