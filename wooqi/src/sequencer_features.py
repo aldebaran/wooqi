@@ -2,8 +2,10 @@
 """
 Sequencer features
 """
-from wooqi.src import global_var
+import os
+import time
 import pytest
+from wooqi.src import global_var
 
 
 def get_uuts(pytest_metafunc, cpt=None):
@@ -139,7 +141,7 @@ def item_loop_option_analyse(item, test_name, first_arg):
     return test_name, iter_number
 
 
-def filter_order_tests(items):
+def filter_order_tests(config, items):
     """
     Filter and re-order the tests according to the config test file
     """
@@ -197,6 +199,91 @@ def filter_order_tests(items):
         else:
             items_temp.append(item[1])
     items[:] = items_temp
+
+    # Manage --failed-first option to pytest-cache for wooqi
+    rerun_sequence_since_the_fail(config, items)
+
+
+def rerun_sequence_since_the_fail(config, items):
+    """
+    To rerun sequence since the first fail
+    """
+    # Delete old cache file
+    for file_name in os.listdir(os.path.abspath('.cache/v/cache/')):
+        if file_name != 'lastfailed':
+            file_path = os.path.abspath('.cache/v/cache/%s' % file_name)
+            if time.time() - os.path.getmtime(file_path) > 604800:  # 604800 seconds -> 7 days
+                os.remove(file_path)
+
+    if not config.getoption('--ff'):
+        return
+
+    serial_number = config.getoption('--sn')
+    cache_path = os.path.abspath('.cache/v/cache/%s' % serial_number)
+    if os.path.isfile(cache_path):
+        # Found the name of test failed
+        cache_file = open(cache_path, 'r')
+        file_read = cache_file.read()
+
+        sequence_name = file_read.split('\n', 1)[0]
+        if config.getoption('--seq-config') != sequence_name:
+            return
+
+        item_fail_name = file_read.split('::')[1].split('"')[0]
+        if '[' in item_fail_name:
+            test_failed, option = item_fail_name.split('[', 1)
+            option = option.split('-')[0].split(']')[0]
+            if global_var['config'].exist('%s_0' % test_failed):
+                # First option is not uut
+                item_fail_name = '%s[%s' % (test_failed, option)
+                test_failed = '%s_%s' % (test_failed, option)
+            else:
+                item_fail_name = test_failed
+
+            # Verify loop option
+            if global_var['config'].loop_infos() is not None:
+                test_order_loop_start = global_var['config'].file_config[
+                        global_var['config'].loop_infos()[0][0]]["test_order"]
+                test_order_loop_stop = global_var['config'].file_config[
+                        global_var['config'].loop_infos()[0][1]]["test_order"]
+                # If test fail in loop, restart the loop
+                if not global_var['config'].exist(test_failed) or (test_order_loop_start <=
+                   global_var['config'].file_config[test_failed]['test_order'] <=
+                   test_order_loop_stop):
+                    test_failed = global_var['config'].loop_infos()[0][0]
+                    test_failed, option = test_failed.rsplit('_', 1)
+                    if global_var['config'].exist('%s_%s' % (test_failed, option)) and \
+                            global_var['config'].exist('%s_0' % test_failed):
+                        # First option is not uut
+                        option = option.split(']', 1)[0].split('-')[0]
+                        item_fail_name = '%s[%s' % (test_failed, option)
+                        test_failed = '%s_%s' % (test_failed, option)
+                    else:
+                        item_fail_name = '%s_%s' % (test_failed, option)
+        else:
+            test_failed = item_fail_name
+
+        # Verify if one test is required
+        try:
+            test_required = global_var['config'].file_config[test_failed]['test_required']
+            if test_required is not None:
+                # Found item_fail_name
+                item_fail_name = test_required
+        except KeyError:
+            pass
+
+        # Authorize all tests after found the first test failed
+        first_test_failed_found = False
+        items_temp = []
+        for item in items:
+            if first_test_failed_found:
+                items_temp.append(item)
+            elif item_fail_name in str(item):
+                if '[' not in str(item_fail_name) or \
+                      str(item).split(item_fail_name)[1][0] in [']', '-']:
+                    first_test_failed_found = True
+                    items_temp.append(item)
+        items[:] = items_temp
 
 
 def postfail_feature_management(test, item, skip, loop):

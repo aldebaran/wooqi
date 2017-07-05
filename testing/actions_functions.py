@@ -66,3 +66,11 @@ def action_2_uut2(executed_tests, test_result, uut, uut2):
     """
     executed_tests.append(2)
     assert test_result
+
+
+def action_loop_fail_second_call(executed_tests, test_result):
+    """
+    loop test fail on second call
+    """
+    executed_tests.append(0)
+    assert executed_tests.count(0) == 1

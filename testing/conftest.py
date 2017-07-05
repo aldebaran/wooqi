@@ -18,7 +18,7 @@ def executed_tests(request, test_config_parser, logger):
         """
         required_list = []
         required_list = [int(x) for x in test_config_parser.get(
-            "Result", "executed_tests").split(",")]
+            "Result", mode_tests).split(",")]
         test_name = test_config_parser.get("Result", "test_name")
         fail_message = test_name + " failed"
         logger.info(test_name)
@@ -27,6 +27,10 @@ def executed_tests(request, test_config_parser, logger):
         assert executed_tests == required_list, fail_message
         logger.info("TEST PASSED")
 
+    if request.config.getoption("--ff"):
+        mode_tests = 'rerun_tests'
+    else:
+        mode_tests = 'executed_tests'
     request.addfinalizer(analyze_result)
     return executed_tests
 

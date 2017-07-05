@@ -186,6 +186,31 @@ Example:
 
     wooqi --seq-config test_sequences/folder1/seq1.ini --sn mySample
 
+### Rerun a test sequence since the first fail
+
+To rerun sequence since the first test failed, use the same command and add --ff option (--failed-first):
+
+    wooqi --seq-config TEST_SEQUENCE_FILE --sn SAMPLE_NAME --ff
+
+If sequence fail in loop, all test of the loop are rerun.
+
+You can defined a previous test or action required.
+If the test failed has a requirement, the sequence rerun since the test defined to the .ini file.
+
+```ini
+[test_a]
+
+[test_b]
+
+[test_c]
+test_required='test_b'
+
+[test_d]
+test_required='test_b'
+
+[test_e]
+```
+
 ### Advanced functionalities
 
 *TBC*

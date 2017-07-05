@@ -2,6 +2,7 @@
 """
 Pytest hooks
 """
+import os
 import pytest
 from wooqi.src import sequencer_features
 from wooqi.src.config_test import ConfigTest
@@ -9,14 +10,14 @@ from wooqi.src import global_var
 from wooqi.src import logger_gv
 
 
-def pytest_collection_modifyitems(items):
+def pytest_collection_modifyitems(config, items):
     """
     Called after collection has been performed, filter and re-order
     the items in-place, and create global variable
     """
     if global_var['config'] != None:
-        # filter and re-order tests
-        sequencer_features.filter_order_tests(items)
+        # Filter and re-order tests
+        sequencer_features.filter_order_tests(config, items)
 
         # Configure the tests with the reruns and timeout features
         sequencer_features.configure_reruns_timeout_features(items)
@@ -170,3 +171,21 @@ def pytest_sessionfinish(exitstatus, session):
             logger_gv.debug('===============================================')
             logger_gv.debug('================ END OF SCRIPT ================')
             logger_gv.debug('===============================================')
+
+
+def pytest_unconfigure(config):
+    """
+    Copy cache file generate by pytest in new file with serial and config file
+    """
+    cache_path = os.path.abspath('.cache/v/cache/lastfailed')
+    if os.path.isfile(cache_path):
+        lastfailed_file = open(cache_path, 'r')
+        text = lastfailed_file.read()
+        lastfailed_file.close()
+
+        text_insert = '%s\n' % config.getoption('--seq-config')
+        serial_number = config.getoption('--sn')
+        cache_path = os.path.abspath('.cache/v/cache/%s' % serial_number)
+        cache_file = open(cache_path, 'w')
+        cache_file.write(text_insert + text)
+        cache_file.close()
