@@ -39,6 +39,37 @@ def init_command(args):
                 print ">>> Directory " + project_name + " already exists"
                 print ">>> Project initialization failed."
 
+def print_usage():
+    """
+        Print the usage of the Wooqi command
+    """
+    usage_txt = """
+*********************************
+***** Wooqi tests sequencer *****
+*********************************
+
+--- Independant commands -------------------------------------------------------
+    wooqi [args]
+        --init-project XXXX     Initialize a Wooqi project named XXXX,
+                                creating all necessary directories and files.
+        -v/--version            Print the installed version of Wooqi
+        -h/--help               Display this help
+
+--- Command to launch tests -------------------------------------------------------
+    wooqi [args]
+        --seq-config XXXX       (required) relative path to the .ini file of the test sequence
+        --sn XXXX               (required) Specific SAMPLE_NAME or SERIAL_NUMBER. Used to name the logs.
+        -s                      Display logs and print output in the console.
+        -k XXXX                 Execute the specified tests only (name can be incomplete)
+        --lf                    Execute the last failed test only.
+
+    Examples:
+        * Launch a test sequence:
+            wooqi --seq-config sequences/test_motors.ini --sn MySample -s"
+        * Initialize a wooqi project:
+            wooqi --init-project my_project"
+"""
+    print(usage_txt)
 
 def main(args=None):
     """
@@ -47,23 +78,23 @@ def main(args=None):
     if args is None:
         args = sys.argv[1:]
     arguments = ""
-    if "--version" in args:
-        print "Wooqi " + __version__
+    if "--help" in args or "-h" in args:
+        print_usage()
+    elif "--version" or "-v" in args:
+        print(__version__)
     elif "--init-project" in args:
         init_command(args[args.index('--init-project'):])
     elif "--seq-config" in args:
         arguments = " ".join(args)
-        print "*********************************"
-        print "***** Wooqi tests sequencer *****"
-        print "*********************************"
+        print("*********************************")
+        print("***** Wooqi tests sequencer *****")
+        print("*********************************")
         exit_code = os.system("py.test " + arguments + " --spec --wooqi")
         return exit_code >> 8
     else:
-        print "Usage: "
-        print "* Launch a test sequence:"
-        print "    wooqi --seq-config TEST_SEQUENCE_FILE --sn SAMPLE_NAME/SERIAL_NUMBER [-s] [-k TEST_NAME] [--lf]"
-        print "* Initialize a wooqi project:"
-        print "    wooqi --init-project my_project"
+        print("/!\ Error: unknown Wooqi command ! Please see usage below.")
+        print_usage()
+        exit(-1)
 
 if __name__ == '__main__':
     sys.exit(main())
