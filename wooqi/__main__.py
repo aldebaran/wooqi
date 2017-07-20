@@ -52,7 +52,7 @@ def print_usage():
     wooqi [args]
         --init-project XXXX     Initialize a Wooqi project named XXXX,
                                 creating all necessary directories and files.
-        --version               Print the installed version of Wooqi
+        -v/--version               Print the installed version of Wooqi
         -h/--help               Display this help
 
 --- Command to launch tests -------------------------------------------------------
@@ -80,8 +80,8 @@ def main(args=None):
     arguments = ""
     if "--help" in args or "-h" in args:
         print_usage()
-    elif "--version" in args:
-        print "Wooqi " + __version__
+    elif "--version" or "-v" in args:
+        print(__version__)
     elif "--init-project" in args:
         init_command(args[args.index('--init-project'):])
     elif "--seq-config" in args:
