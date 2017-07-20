@@ -52,7 +52,7 @@ def print_usage():
     wooqi [args]
         --init-project XXXX     Initialize a Wooqi project named XXXX,
                                 creating all necessary directories and files.
-        -v/--version               Print the installed version of Wooqi
+        -v/--version            Print the installed version of Wooqi
         -h/--help               Display this help
 
 --- Command to launch tests -------------------------------------------------------
