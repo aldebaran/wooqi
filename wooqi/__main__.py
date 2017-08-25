@@ -7,6 +7,7 @@ import os
 import shutil
 from wooqi import __version__
 
+
 def init_command(args):
     """
     Manage the `wooqi init` command
@@ -19,7 +20,7 @@ def init_command(args):
         print "[ERROR] usage: wooqi --init-project my_project_name"
     else:
         project_name = args[1]
-        print ">>> Create a new project '" + project_name + "' in '" + os.path.abspath(".") +"' ? (y/n)"
+        print ">>> Create a new project '" + project_name + "' in '" + os.path.abspath(".") + "' ? (y/n)"
         answer = raw_input()
         if answer == 'y':
             print ">>> Creating project..."
@@ -27,10 +28,10 @@ def init_command(args):
             if not os.path.isdir(project_path):
                 try:
                     project_template_path = os.path.abspath(os.path.join(os.path.dirname(__file__),
-                                                               "project_template"))
+                                                                         "project_template"))
                     # ignore files with '.pyc' extension and ignore '__pycache__' directory
                     ignore_func = lambda d, files: [f for f in files if (os.path.isfile(os.path.join(d, f)) and
-                                                    f[-4:] == '.pyc') or f == '__pycache__']
+                                                                         f[-4:] == '.pyc') or f == '__pycache__']
                     shutil.copytree(project_template_path, project_path, ignore=ignore_func)
                 except OSError as e:
                     print('Directory not copied. Error: %s' % e)
@@ -38,6 +39,7 @@ def init_command(args):
             else:
                 print ">>> Directory " + project_name + " already exists"
                 print ">>> Project initialization failed."
+
 
 def print_usage():
     """
@@ -71,6 +73,7 @@ def print_usage():
 """
     print(usage_txt)
 
+
 def main(args=None):
     """
     Main
@@ -80,7 +83,7 @@ def main(args=None):
     arguments = ""
     if "--help" in args or "-h" in args:
         print_usage()
-    elif "--version" or "-v" in args:
+    elif "--version" in args or "-v" in args:
         print(__version__)
     elif "--init-project" in args:
         init_command(args[args.index('--init-project'):])
