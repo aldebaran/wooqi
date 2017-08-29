@@ -14,6 +14,7 @@ class ConfigTest(object):
     def __init__(self, config_path):
         try:
             parser = SafeConfigParser()
+            parser.optionxform = str
             config_file = config_path
             file_parse = parser.read(config_file)
         except Exception, error:
