@@ -209,14 +209,14 @@ def rerun_sequence_since_the_fail(config, items):
     To rerun sequence since the first fail
     """
     # Delete old cache file
+    if not os.path.isdir(os.path.abspath('.cache/v/cache/')) or not config.getoption('--ff'):
+        return
+
     for file_name in os.listdir(os.path.abspath('.cache/v/cache/')):
         if file_name != 'lastfailed':
             file_path = os.path.abspath('.cache/v/cache/%s' % file_name)
             if time.time() - os.path.getmtime(file_path) > 604800:  # 604800 seconds -> 7 days
                 os.remove(file_path)
-
-    if not config.getoption('--ff'):
-        return
 
     serial_number = config.getoption('--sn')
     cache_path = os.path.abspath('.cache/v/cache/%s' % serial_number)
@@ -243,13 +243,14 @@ def rerun_sequence_since_the_fail(config, items):
             # Verify loop option
             if global_var['config'].loop_infos() is not None:
                 test_order_loop_start = global_var['config'].file_config[
-                        global_var['config'].loop_infos()[0][0]]["test_order"]
+                    global_var['config'].loop_infos()[0][0]]["test_order"]
                 test_order_loop_stop = global_var['config'].file_config[
-                        global_var['config'].loop_infos()[0][1]]["test_order"]
+                    global_var['config'].loop_infos()[0][1]]["test_order"]
                 # If test fail in loop, restart the loop
-                if not global_var['config'].exist(test_failed) or (test_order_loop_start <=
-                   global_var['config'].file_config[test_failed]['test_order'] <=
-                   test_order_loop_stop):
+                if not global_var['config'].exist(test_failed) or \
+                    (test_order_loop_start <=
+                     global_var['config'].file_config[test_failed]['test_order'] <=
+                     test_order_loop_stop):
                     test_failed = global_var['config'].loop_infos()[0][0]
                     test_failed, option = test_failed.rsplit('_', 1)
                     if global_var['config'].exist('%s_%s' % (test_failed, option)) and \
@@ -280,7 +281,7 @@ def rerun_sequence_since_the_fail(config, items):
                 items_temp.append(item)
             elif item_fail_name in str(item):
                 if '[' not in str(item_fail_name) or \
-                      str(item).split(item_fail_name)[1][0] in [']', '-']:
+                        str(item).split(item_fail_name)[1][0] in [']', '-']:
                     first_test_failed_found = True
                     items_temp.append(item)
         items[:] = items_temp
