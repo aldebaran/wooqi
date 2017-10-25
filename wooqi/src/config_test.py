@@ -12,10 +12,10 @@ class ConfigTest(object):
     """ Config Class """
 
     def __init__(self, config_path):
+        config_file = config_path
         try:
             parser = SafeConfigParser()
             parser.optionxform = str
-            config_file = config_path
             file_parse = parser.read(config_file)
         except Exception, error:
             msg = 'Problem while parsing configuration file %s (%s)' % (
@@ -38,7 +38,8 @@ class ConfigTest(object):
         self.file_config = file_config
         self.current_test = None
 
-    def _get_paramater(self, param, uut, uut2, evaluate=True):
+    @staticmethod
+    def _get_paramater(param, uut, uut2, evaluate=True):
         """
         Get paramater
         """
@@ -60,7 +61,7 @@ class ConfigTest(object):
                         dico[tab[0]] = eval(tab[1])
                     else:
                         dico[tab[0]] = tab[1]
-                if uut != None and uut2 != None:
+                if uut is not None and uut2 is not None:
                     uuts_name = "%s-%s" % (uut, uut2)
                     if uuts_name in dico.keys():
                         return dico[uuts_name]
@@ -68,7 +69,7 @@ class ConfigTest(object):
                         return dico["Default"]
                     else:
                         return None
-                elif uut != None:
+                elif uut is not None:
                     if uut in dico.keys():
                         return dico[uut]
                     elif "Default" in dico.keys():
@@ -82,7 +83,8 @@ class ConfigTest(object):
             print error
             return None
 
-    def _get_range(self, string):
+    @staticmethod
+    def _get_range(string):
         """
         Return range list
         """
@@ -98,7 +100,33 @@ class ConfigTest(object):
         second_int = int(string[index_2 + 1:index_3])
         return range(first_int, second_int)
 
-    def _get_folder(self, string):
+    @staticmethod
+    def _get_folders(string):
+        """
+        Return a list containing the names of the elements from the given dir.
+        Directory must be given with absolute path
+        Returned elements are given with absolute path.
+        Please note that files in subdirectories are also returned!!
+        Returned elements are files only, directories are 'walked' through.
+        """
+        index_1, index_2 = 0, 0
+        for index, each in enumerate(string):
+            if each == "(":
+                index_1 = index
+            elif each == ")":
+                index_2 = index
+        root_dir = string[index_1 + 1:index_2]
+        if os.path.isdir(root_dir):
+            elements = []
+            for current_folder, subdirectories, files in os.walk(root_dir):
+                for filename in files:
+                    elements.append(os.path.join(current_folder, filename))
+            return elements
+        else:
+            exit("Folders parameter in 'uut' is not a valid directory.")
+
+    @staticmethod
+    def _get_folder(string):
         """
         Return a list containing the names of the elements from the given dir.
         Directory must be given with absolute path
@@ -206,6 +234,8 @@ class ConfigTest(object):
             values = self.file_config[test_name]['uut']
             if "range" in values:
                 return self._get_range(values)
+            elif "recurse_folders" in values:
+                return self._get_folders(values)
             elif "folder" in values:
                 return self._get_folder(values)
             else:
@@ -222,6 +252,8 @@ class ConfigTest(object):
             values = self.file_config[test_name]['uut2']
             if "range" in values:
                 return self._get_range(values)
+            elif "recurse_folders" in values:
+                return self._get_folders(values)
             elif "folder" in values:
                 return self._get_folder(values)
             else:
