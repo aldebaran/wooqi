@@ -18,6 +18,7 @@ setup(
     name="wooqi",
     description="Pytest plugin allowing to parametrize all the test sequence thanks to a config file",
     packages=find_packages(),
+    license='BSD-3',
     entry_points={
         'pytest11': [
             'wooqi = wooqi.plugin'], 'console_scripts': ['wooqi = wooqi.__main__:main']},
