@@ -1,3 +1,9 @@
+# -*- coding: utf-8 -*-
+
+# Copyright (c) 2017 SoftBank Robotics Europe. All rights reserved.
+# Use of this source code is governed by a BSD-style license that can be
+# found in the LICENSE file.
+
 """
 pip package setup
 """
@@ -12,6 +18,7 @@ setup(
     name="wooqi",
     description="Pytest plugin allowing to parametrize all the test sequence thanks to a config file",
     packages=find_packages(),
+    license='BSD-3',
     entry_points={
         'pytest11': [
             'wooqi = wooqi.plugin'], 'console_scripts': ['wooqi = wooqi.__main__:main']},
