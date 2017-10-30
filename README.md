@@ -217,7 +217,11 @@ test_required='test_b'
 
 #### Write tools
 
-*TBC*
+Steps may need external functions that are useful for several of them. These functions, that we call
+"tools" can be written in any python files. Afterwards they can be imported in python files which
+contain steps, and called within the steps. The only rule that is mandatory not to confuse wooqi is
+to avoid naming these functions with a name that starts with "test_" or "action_", as these names
+are only used for steps and actions.
 
 #### Configure wooqi
 
@@ -228,8 +232,17 @@ All the available parameters and their use are explained in this template.
 
 #### Write your own fixtures
 
-*TBC*
+The concept of fixtures is a nice feature provided by Py.test. To get more information about it,
+please read the official [documentation](https://docs.pytest.org/en/latest/fixture.html).
+
+You can add your own fixtures to your project in any file you want. Then, each one of your steps
+can call a fixture as one of its arguments. These fixtures will be called before the execution of
+the step in the sequence.
 
 #### Write your own pytest hooks
 
-*TBC*
+The Py.test tool offers several hooks that allow to insert custom code in the middle of the
+execution of Py.test. To get more information about these, please read the official
+[documentation](https://docs.pytest.org/en/latest/writing_plugins.html#writinghooks).
+
+You can add your own custom hooks in your wooqi project.
