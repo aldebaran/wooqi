@@ -7,10 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ***
 ## [Unreleased] - XXXXX-XX-XX
 ### Enhanced
+- None
 
 ### Added
-- [Issue #24](https://gitlab.aldebaran.lan/production/wooqi/issues/24): recurse_folders as uut parameter.
-- [Issue #25](https://gitlab.aldebaran.lan/production/wooqi/issues/25): Add LICENSE file and headers.
+- None
 
 ### Changed
 - None
@@ -29,6 +29,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Known Issues
 - None
+
+***
+## [1.2.0] - 2017-10-31
+### Added
+- [Issue #24](https://gitlab.aldebaran.lan/production/wooqi/issues/24): recurse_folders as uut parameter.
+- [Issue #25](https://gitlab.aldebaran.lan/production/wooqi/issues/25): Add LICENSE file and headers.
 
 ***
 ## [1.1.0] - 2017-08-30
@@ -58,6 +64,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 *First official release.*
 
 [Unreleased]: https://gitlab.aldebaran.lan/production/wooqi/compare/v1.1.0...master
+[1.2.0]: https://gitlab.aldebaran.lan/production/wooqi/compare/v1.1.0...v1.2.0
 [1.1.0]: https://gitlab.aldebaran.lan/production/wooqi/compare/v1.0.2...v1.1.0
 [1.0.2]: https://gitlab.aldebaran.lan/production/wooqi/compare/v1.0.1...v1.0.2
 [1.0.1]: https://gitlab.aldebaran.lan/production/wooqi/compare/v1.0.0...v1.0.1

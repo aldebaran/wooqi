@@ -10,11 +10,13 @@ execution.
 Wooqi hacks the standard use of pytest to introduce new mechanics, in order to apply a precise
 testing methodology which can be described by the following key points:
 
-* There is a *test steps* database.  There is a *test sequences* database, where each sequence is
-* composed of one or several test steps picked from the *test steps* database.  There are some
-* *common tools* (custom python classes or functions) and *fixtures* (introduced by pytest) which
-* all can be used by any test step.  Users can execute a single test sequence with a single command
-* line.  All reports and logs of test sequences are saved in a common *reports* database.
+* There is a *test steps* database.
+* There is a *test sequences* database, where each sequence is
+composed of one or several test steps picked from the *test steps* database.
+* There are some *common tools* (custom python classes or functions)
+and *fixtures* (introduced by pytest) which all can be used by any test step.
+* Users can execute a single test sequence with a single command line.
+* All reports and logs of test sequences are saved in a common *reports* database.
 
 Creation of logs, parametrization of tests, report reading, and tests scheduling are some examples
 of the things which are simplified with wooqi. Moreover, the generic aspect of this tool allows to
@@ -70,9 +72,10 @@ The tree view of the created project is just a suggestion and is not mandatory f
 You can customize your Wooqi project as you like, as long as you respect the following rules (please
 read the next sections to fully understand these rules):
 
-1. Fixtures must be imported in *conftest.py* at the root of the project.  2. *setup.cfg* must be at
-the root of the project. (Please see **Advanced functionalities** section) 3. Test steps, actions,
-and sequences must respect the rules that are given in their dedicated section.
+1. Fixtures must be imported in *conftest.py* at the root of the project.
+2. *setup.cfg* must be at
+the root of the project. (Please see **Advanced functionalities** section)
+3. Test steps, actions, and sequences must respect the rules that are given in their dedicated section.
 
 ### Write tests
 
@@ -81,30 +84,34 @@ and sequences must respect the rules that are given in their dedicated section.
 A test step is simply a python function with an **assertion** in it. The following rules must be
 observed:
 
-* One test step is represented by one function.  A test step can be written in a file in any
-* directory (default directory is *test_steps*).
-  The name of this file must start with "*test_*".
+* One test step is represented by one function.
+* A test step can be written in a file in any directory (default directory is *test_steps*).
+* The name of this file must start with "*test_*".
 * A test step name must start with "*test_*" Assertions in a test step must observe the [guidelines
-* of the pytest module](https://docs.pytest.org/en/latest/assert.html).  Arguments of a test step
-* must be picked from [existing fixtures](#write-your-own-fixtures) and the **Wooqi** special
-* arguments given below.  
+of the pytest module](https://docs.pytest.org/en/latest/assert.html).
+* Arguments of a test step must be picked from [existing fixtures](#write-your-own-fixtures) and the **Wooqi** special
+arguments given below.
   For more information about these special arguments, please see the "*test sequences*" section of
   this documentation.
-  * uut uut2 test_info A test step can use any python function from any other file as long as it is
-  * imported. It is standard python !
+  * uut
+  * uut2
+  * test_info
+* A test step can use any python function from any other file as long as it is
+imported. It is standard python !
 
 #### Write an action
 
 An action is almost the same than a test step, except it does not necessarily have an assertion.
 The following rules must be observed:
 
-* One action is represented by one function.  An action can be written in a file in any directory
-* (default directory is *actions_step*).
-  The name of this file must start with "*actions_*".
-* An action name must start with "*action_*" An action can contain an assertion like a test step but
-* this is not mandatory.  Arguments of an action follow the same rule than for a test step.  An
-* action can use any python function from any other file as long as it is imported. It is standard
-* python !
+* One action is represented by one function.
+* An action can be written in a file in any directory (default directory is *actions_step*).
+* The name of this file must start with "*actions_*".
+* An action name must start with "*action_*".
+* An action can contain an assertion like a test step but this is not mandatory.
+* Arguments of an action follow the same rule than for a test step.
+* An action can use any python function from any other file as long as it is imported.
+It is standard python !
 
 #### Write a test sequence
 
@@ -119,25 +126,30 @@ attr1=value1
 attr2=value2  
 ```
 
-There is one initial section that could be present in these configuration files: **[test_info]** It
-contains information about the test itself. Following attributes can be present in this section:
+There is one initial section that could be present in these configuration files:
 
-* **loop_tests** : Used to make loops in the sequence.
-  Please refer to the [dedicated section](#make-loops-in-the-test-sequence)
-* **loop_iter** : Used to make loops in the sequence.
-  Please refer to the [dedicated section](#make-loops-in-the-test-sequence)
+* **[test_info]** It contains information about the sequence itself.
+    Following attributes can be present in this section:
+    * **loop_tests**: Used to make loops in the sequence.
+      Please refer to the [dedicated section](#make-loops-in-the-test-sequence)
+    * **loop_iter**: Used to make loops in the sequence.
+      Please refer to the [dedicated section](#make-loops-in-the-test-sequence)
 
 Other sections are referring to test steps or actions. Any step or action can be picked from the
-test_steps directory simply by writing its name as the section name.  Example:
+test_steps directory simply by writing its name as the section name.
+
+**Example:**
 `[test_battery_charge]`. Some attributes of this section are used to organize this step in the test,
 and some others are given to the step function as parameters.  The step order is defined by the
 order of definition in the .ini
 
 Here is a list of attributes that could be written in step/action sections:
 
-* **post_fail** : *TBC* 
-* **uut** : *TBC* 
-* **uut2** : *TBC* 
+* **post_fail**: *TBC*
+* **reruns**: *TBC*
+* **timeout**: *TBC*
+* **uut**: *TBC*
+* **uut2**: *TBC*
 * *[...TBC...]*
 
 ##### Call the same step several times in a single sequence
@@ -189,10 +201,11 @@ To launch a test, move to the root of your project depository and run the follow
 
 Where:
 
-* **[--seq-config TEST_SEQUENCE_FILE]** (required) relative path to the .ini file of the test
-* sequence **[--sn SAMPLE_NAME]** (required) Sample Name. Used to name the logs.  **[-s]** Display
-* logs and print output in the console.  **[-k TEST_NAME]** Execute the specified tests only (name
-* can be incomplete) **[-lf]** Execute the last failed test only.
+* **[--seq-config TEST_SEQUENCE_FILE]** (required) relative path to the .ini file of the test sequence.
+* **[--sn SAMPLE_NAME]** (required) Sample Name. Used to name the logs.
+* **[-s]** Display logs and print output in the console.
+* **[-k TEST_NAME]** Execute the specified tests only (name can be incomplete).
+* **[-lf]** Execute the last failed test only.
 
 Example:
 
@@ -226,7 +239,6 @@ test_required='test_b'
 
 ### Advanced functionalities
 
-*TBC*
 
 #### Write tools
 
