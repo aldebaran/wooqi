@@ -103,7 +103,7 @@ class ConfigTest(object):
                 index_3 = index
         first_int = int(string[index_1 + 1:index_2])
         second_int = int(string[index_2 + 1:index_3])
-        return range(first_int, second_int)
+        return map(str, range(first_int, second_int))
 
     @staticmethod
     def _get_folders(string):
