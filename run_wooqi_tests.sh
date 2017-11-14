@@ -19,3 +19,5 @@ testing/uut2_feature/./run_wooqi_uut2_tests.sh
 testing/loop_feature/./run_wooqi_loop_tests.sh
 
 testing/cache_feature/./run_wooqi_cache_tests.sh
+
+testing/range_feature/./run_wooqi_range_tests.sh
