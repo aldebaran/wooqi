@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ***
 ## [Unreleased] - XXXXX-XX-XX
 ### Enhanced
-- None
+- [Issue #21](https://gitlab.aldebaran.lan/production/wooqi/issues/21): Add possibility to give 3 arguments to range().
 
 ### Added
 - None
