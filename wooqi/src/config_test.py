@@ -8,6 +8,7 @@
 TestConfig Class
 """
 import os
+import re
 from sys import exit
 import collections
 from ConfigParser import SafeConfigParser
@@ -93,33 +94,10 @@ class ConfigTest(object):
         """
         Return range list
         """
-        index_1, index_2, index_3 = 0, 0, 0
-        three_args = False
-        if string.count(",") == 2:
-            three_args = True
-        cpt = 0
-        for index, each in enumerate(string):
-            if each == "(":
-                index_1 = index
-            elif each == ",":
-                if cpt == 0:
-                    index_2 = index
-                elif cpt == 1:
-                    index_3 = index
-                if three_args:
-                    cpt = cpt + 1
-            elif each == ")":
-                if three_args:
-                    index_4 = index
-                else:
-                    index_3 = index
-        third_int = 1
-        first_int = int(string[index_1 + 1:index_2])
-        second_int = int(string[index_2 + 1:index_3])
-        if three_args:
-            third_int = int(string[index_3 + 1:index_4])
-
-        return map(str, range(first_int, second_int, third_int))
+        range_args = map(int, re.findall("([0-9]+)", string))
+        if len(range_args) == 2:
+            range_args.append(1)
+        return map(str, range(range_args[0], range_args[1], range_args[2]))
 
     @staticmethod
     def _get_folders(string):
