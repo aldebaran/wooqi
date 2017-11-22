@@ -33,18 +33,26 @@ pytest plugin.
 **Contact:**  If you need some help about Wooqi, or if you want to contribute, please contact one of
 the following core developers:
 
-* Sebastien MARTIN - <semartin@softbankrobotics.com> 
+* Sebastien MARTIN - <semartin@softbankrobotics.com>
 * Antoine MARTIN - <amartin@softbankrobotics.com>
 * Romain TAPREST - <rtaprest@softbankrobotics.com>
 
 ## Installation
 
-You can only install Wooqi if you have access to the local network of SBRE.
+You can install wooqi as a pip package.
 
-    pip install wooqi --find-links=http://10.0.2.107/pypi --index-url http://10.0.2.107/pypi --user
-    --trusted-host 10.0.2.107 --upgrade
+    pip install wooqi --user
 
-* **Dependencies:** **pytest**  
+Or you can clone the depository, and manually build and install the package:
+
+    python setup.py bdist
+    pip install dist/<package_name>
+
+Where `<package_name>` is the name of the wooqi package with its version
+
+### Dependencies:
+
+* **pytest**  
 	`pip install pytest --user --upgrade`
     * **pytest-rerunfailures**  
 	`pip install pytest-rerunfailures --user --upgrade`
@@ -120,7 +128,7 @@ It is standard python !
  A test is described in a configuration file (*.ini*). This file can be in any directory (default is
  *sequences*). As a result this file contains several sections with some attributes, like this:
 
-```ini 
+```ini
 [my_section]  
 attr1=value1  
 attr2=value2  
@@ -157,7 +165,7 @@ Here is a list of attributes that could be written in step/action sections:
 If you need to call the same test step several times, there is a special syntax. You must add "\_X"
 at the end of the test name, increasing the number "X from "0" as follow :
 
-```ini 
+```ini
 [test_foo_0] ; Start with 0  
 uut=dummy1
 
@@ -165,7 +173,7 @@ uut=dummy1
 uut=dummy2
 
 [test_foo_X] ; and so on...   
-uut=dummy3 
+uut=dummy3
 ```
 
 ##### Make loops in the test sequence
@@ -190,7 +198,7 @@ loop_iter=2
 
 [test_d]
 
-[test_e] 
+[test_e]
 ```
 
 ### Run a test sequence
