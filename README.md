@@ -41,7 +41,7 @@ the following core developers:
 
 You can install wooqi as a pip package.
 
-    pip install wooqi
+    pip install wooqi --user
 
 Or you can clone the depository, and manually build and install the package:
 
