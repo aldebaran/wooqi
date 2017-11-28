@@ -94,6 +94,8 @@ def main(args=None):
     elif "--init-project" in args:
         init_command(args[args.index('--init-project'):])
     elif "--seq-config" in args:
+        if "--ff" not in args and "--lf" not in args:
+            args.append("--cache-clear")
         arguments = " ".join(args)
         print("*********************************")
         print("***** Wooqi tests sequencer *****")
