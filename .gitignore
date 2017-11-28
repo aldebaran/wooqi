@@ -58,6 +58,8 @@ coverage.xml
 docs/_build/
 doc/build-doc/
 
-
 # PyBuilder
 target/
+
+# Pycharm
+.idea
