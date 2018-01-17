@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased] - XXXXX-XX-XX
 ### Enhanced
 - [Issue #21](https://gitlab.aldebaran.lan/production/wooqi/issues/21): Add possibility to give 3 arguments to range().
+- [Issue #31](https://gitlab.aldebaran.lan/production/wooqi/issues/31): Wooqi project - place actions in test_steps folder.
 
 ### Added
 - None
