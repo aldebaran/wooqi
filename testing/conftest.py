@@ -54,3 +54,23 @@ def test_result(test_info):
     else:
         error = "Bad parameter in test config file"
         pytest.fail(error)
+
+
+@pytest.fixture()
+def fixture_setup_fail(executed_tests, test_result):
+    """
+    Fixture setup fail
+    """
+    error = "Fixture setup fail"
+    pytest.fail(error)
+
+
+@pytest.fixture()
+def fixture_teardown_fail(request):
+    """
+    Fixture teardown fail
+    """
+    def end():
+        error = "Fixture teardown fail"
+        pytest.fail(error)
+    request.addfinalizer(end)

@@ -107,3 +107,21 @@ if [ $? = 0 ];then
 else
     echo -e "- Postfail other actions | Same action --> ${RED}FAILED${NC}"
 fi
+
+va=$(wooqi --seq-config testing/postfail_feature/tests/postfail_fixture_setup_fail.ini --sn wooqi_tests -s)
+
+echo -e $va | grep --quiet "TEST PASSED"
+if [ $? = 0 ];then
+    echo -e "- Postfail fixture setup fail | Same action --> ${GREEN}PASSED${NC}"
+else
+    echo -e "- Postfail fixture setup fail | Same action --> ${RED}FAILED${NC}"
+fi
+
+va=$(wooqi --seq-config testing/postfail_feature/tests/postfail_fixture_teardown_fail.ini --sn wooqi_tests -s)
+
+echo -e $va | grep --quiet "TEST PASSED"
+if [ $? = 0 ];then
+    echo -e "- Postfail fixture teardown fail | Same action --> ${GREEN}PASSED${NC}"
+else
+    echo -e "- Postfail fixture teardown fail | Same action --> ${RED}FAILED${NC}"
+fi

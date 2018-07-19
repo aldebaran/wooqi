@@ -79,3 +79,17 @@ def test_loop_fail_second_call(executed_tests, test_result):
     """
     executed_tests.append(0)
     assert executed_tests.count(0) == 1
+
+
+def test_setup_fixture(fixture_setup_fail):
+    """
+    test setup fixture fail
+    """
+    pass
+
+
+def test_teardown_fixture(fixture_teardown_fail):
+    """
+    test teardown fixture fail
+    """
+    pass

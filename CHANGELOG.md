@@ -11,7 +11,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - [Issue #31](https://gitlab.aldebaran.lan/production/wooqi/issues/31): Wooqi project - place actions in test_steps folder.
 
 ### Added
-- None
+- [Issue #32](https://gitlab.aldebaran.lan/production/wooqi/issues/32): Manage postfail_feature_management when teardown fail.
 
 ### Changed
 - None

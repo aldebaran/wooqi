@@ -56,12 +56,35 @@ def pytest_runtest_makereport(item, call):
                 logger_gv.error(result)
             if 'skipped' in result:
                 logger_gv.warning(result)
+
             if 'passed' in result:
                 logger_gv.info(result)
             elif "reruns" in item.keywords.__dict__.keys():
                 logger_gv.info("rerun " + str(item))
                 if item.keywords.__dict__["reruns"] == global_var['config'].reruns(test_name) + 1:
                     skip = True
+            else:
+                skip = True
+
+            if "loop" in item.keywords.__dict__["_markers"].keys():
+                loop = True
+            else:
+                loop = False
+
+            # Manage the postfail feature according to the config test file
+            sequencer_features.postfail_feature_management(
+                item.name, item, skip, loop)
+
+        # Manage skip marker, when test fail on the teardown
+        elif call.when == 'teardown' and rep.outcome == 'failed':
+            logger_gv.error("Test teardown {}".format(result))
+
+            if "reruns" in item.keywords.__dict__.keys():
+                logger_gv.info("rerun " + str(item))
+                if item.keywords.__dict__["reruns"] == global_var['config'].reruns(test_name) + 1:
+                    skip = True
+                else:
+                    skip = False
             else:
                 skip = True
 
