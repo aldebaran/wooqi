@@ -23,7 +23,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - None
 
 ### Fixed
-- None
+- [Issue #33](https://gitlab.aldebaran.lan/production/wooqi/issues/33): Wooqi command return correctly signal number
 
 ### Security
 - None
