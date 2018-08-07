@@ -7,11 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ***
 ## [Unreleased] - XXXXX-XX-XX
 ### Enhanced
-- [Issue #21](https://gitlab.aldebaran.lan/production/wooqi/issues/21): Add possibility to give 3 arguments to range().
-- [Issue #31](https://gitlab.aldebaran.lan/production/wooqi/issues/31): Wooqi project - place actions in test_steps folder.
+- None
 
 ### Added
-- [Issue #32](https://gitlab.aldebaran.lan/production/wooqi/issues/32): Manage postfail_feature_management when teardown fail.
+- None
 
 ### Changed
 - None
@@ -23,13 +22,25 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - None
 
 ### Fixed
-- [Issue #33](https://gitlab.aldebaran.lan/production/wooqi/issues/33): Wooqi command return correctly signal number
+- None
 
 ### Security
 - None
 
 ### Known Issues
 - None
+
+***
+## [1.2.1] - 2018-08-07
+### Enhanced
+- [Issue #21](https://gitlab.aldebaran.lan/production/wooqi/issues/21): Add possibility to give 3 arguments to range().
+- [Issue #31](https://gitlab.aldebaran.lan/production/wooqi/issues/31): Wooqi project - place actions in test_steps folder.
+
+### Added
+- [Issue #32](https://gitlab.aldebaran.lan/production/wooqi/issues/32): Manage postfail_feature_management when teardown fail.
+
+### Fixed
+- [Issue #33](https://gitlab.aldebaran.lan/production/wooqi/issues/33): Wooqi command return correctly signal number
 
 ***
 ## [1.2.0] - 2017-10-31
