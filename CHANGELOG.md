@@ -22,7 +22,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - None
 
 ### Fixed
-- None
+- [Issue #35](https://gitlab.aldebaran.lan/production/wooqi/issues/35): Update dependencies versions required.
 
 ### Security
 - None
