@@ -7,39 +7,13 @@
 """
 pip package setup
 """
-
-from setuptools import setup, find_packages
-from wooqi import __version__
-
-# For development purposes, install it with pip install -user -e
-# or python setup.py develop
-
-
-def get_long_description():
-    """Return readme description"""
-    with open('README.md') as fp:
-        return fp.read()
-
-
 import os
 import sys
 import setuptools
 import pkg_resources
 from setuptools import setup, Command
+from wooqi import __version__
 
-classifiers = [
-    'Development Status :: 6 - Mature',
-    'Intended Audience :: Developers',
-    'License :: OSI Approved :: MIT License',
-    'Operating System :: POSIX',
-    'Operating System :: Microsoft :: Windows',
-    'Operating System :: MacOS :: MacOS X',
-    'Topic :: Software Development :: Testing',
-    'Topic :: Software Development :: Libraries',
-    'Topic :: Utilities',
-] + [
-    ('Programming Language :: Python :: %s' % x)
-    for x in '2 2.6 2.7 3 3.3 3.4 3.5 3.6'.split()
 
 def has_environment_marker_support():
     """
@@ -62,11 +36,6 @@ def has_environment_marker_support():
 
 
 def main():
-    # pluggy is vendored in _pytest.vendored_packages
-<<<<<<< master
-    install_requires= ['py>=1.4.33', 'setuptools']
-    extras_require= {}
-=======
     install_requires = ['py>=1.4.33', 'setuptools', 'mock>=1.0.1']
     extras_require = {}
 >>>>>>> Add spec plugin source code
@@ -84,30 +53,15 @@ def main():
         name="wooqi",
         version=__version__,
         description="Pytest plugin allowing to parametrize all the test sequence thanks to a config file",
-        # packages=find_packages(),
         license='BSD-3',
         long_description=get_long_description(),
         long_description_content_type='text/markdown',
         url="https://github.com/aldebaran/wooqi",
         download_url="https://pypi.org/project/wooqi/",
         entry_points={'console_scripts': [
-            'wooqi = wooqi.__main__:main', 'prout=wooqi.pytest.pytest:main'], 'pytest11': ['wooqi = wooqi.plugin_wooqi']},
-        # include_package_data=True,
-        # name='pytest',
-        # description='pytest: simple powerful testing with Python',
-        # long_description=long_description,
-        # use_scm_version={
-        #     'write_to': '_pytest/_version.py',
-        # },
-        # url='http://pytest.org',
-        # license='MIT license',
+            'wooqi = wooqi.__main__:main', 'wooqi_pytest=wooqi.pytest.pytest:main'], 'pytest11': ['wooqi = wooqi.plugin_wooqi']},
         platforms=['unix', 'linux', 'osx', 'cygwin', 'win32'],
-        # entry_points={'console_scripts':
-        #               ['pytest=pytest:main', 'py.test=pytest:main']},
-        # classifiers=classifiers,
-        # keywords="test unittest",
         cmdclass={'test': PyTest},
-        # the following should be enabled for release
         setup_requires=['setuptools-scm'],
         install_requires=install_requires,
         extras_require=extras_require,
