@@ -7,7 +7,7 @@
 """
 Pytest sequencer tests conftest
 """
-import pytest
+import wooqi_pytest as pytest
 
 
 @pytest.fixture(scope="session")

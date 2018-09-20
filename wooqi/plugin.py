@@ -7,7 +7,7 @@
 """
 General plugin file
 """
-import pytest
+import wooqi_pytest as pytest
 from wooqi.src.plugin_fixtures import *
 from wooqi.src.pytest_hooks import *
 from wooqi.src import global_var

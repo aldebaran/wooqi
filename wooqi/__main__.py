@@ -100,7 +100,7 @@ def main(args=None):
         print("*********************************")
         print("***** Wooqi tests sequencer *****")
         print("*********************************")
-        exit(os.system("py.test " + arguments + " --spec --wooqi"))
+        exit(os.system("prout " + arguments + " --wooqi"))
     else:
         print("/!\ Error: unknown Wooqi command ! Please see usage below.")
         print_usage()

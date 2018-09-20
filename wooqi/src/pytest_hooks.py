@@ -8,7 +8,7 @@
 Pytest hooks
 """
 import os
-import pytest
+import wooqi_pytest as pytest
 from wooqi.src import sequencer_features
 from wooqi.src.config_test import ConfigTest
 from wooqi.src import global_var
