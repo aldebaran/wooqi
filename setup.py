@@ -77,6 +77,7 @@ def main():
 
     setup(
         name="wooqi",
+        version=__version__,
         description="Pytest plugin allowing to parametrize all the test sequence thanks to a config file",
         # packages=find_packages(),
         license='BSD-3',
