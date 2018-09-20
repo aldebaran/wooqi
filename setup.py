@@ -63,8 +63,13 @@ def has_environment_marker_support():
 
 def main():
     # pluggy is vendored in _pytest.vendored_packages
+<<<<<<< master
     install_requires= ['py>=1.4.33', 'setuptools']
     extras_require= {}
+=======
+    install_requires = ['py>=1.4.33', 'setuptools', 'mock>=1.0.1']
+    extras_require = {}
+>>>>>>> Add spec plugin source code
     if has_environment_marker_support():
         extras_require[':python_version=="2.6"']= ['argparse', 'ordereddict']
         extras_require[':sys_platform=="win32"']= ['colorama']

@@ -11,7 +11,7 @@ import wooqi_pytest as pytest
 from wooqi.src.plugin_rerunfailures import *
 from wooqi.src.plugin_fixtures import *
 from wooqi.src.pytest_hooks import *
-from wooqi.src.plugin_rerunfailures import *
+from wooqi.src.plugin_spec import pytest_configure
 from wooqi.src import global_var
 
 
@@ -49,6 +49,26 @@ def pytest_addoption(parser):
         type="int",
         default=0,
         help="number of times to re-run failed tests. defaults to 0.")
+
+    group = parser.getgroup('general')
+    group.addoption(
+        '--spec',
+        action='store_true',
+        dest='spec',
+        help='Print test result in specification format'
+    )
+
+    # register config options
+    parser.addini(
+        'spec_header_format',
+        default='{path}::{class_name}',
+        help='The format of the test headers when using the spec plugin'
+    )
+    parser.addini(
+        'spec_test_format',
+        default='[{result}]  {name}',
+        help='The format of the test results when using the spec plugin'
+    )
 
 
 @pytest.fixture(scope="session")
