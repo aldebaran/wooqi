@@ -85,7 +85,7 @@ def main():
         url="https://github.com/aldebaran/wooqi",
         download_url="https://pypi.org/project/wooqi/",
         entry_points={'console_scripts': [
-            'wooqi = wooqi.__main__:main', 'prout=wooqi.pytest.pytest:main'], 'pytest11': ['wooqi = wooqi.plugin']},
+            'wooqi = wooqi.__main__:main', 'prout=wooqi.pytest.pytest:main'], 'pytest11': ['wooqi = wooqi.plugin_wooqi']},
         # include_package_data=True,
         # name='pytest',
         # description='pytest: simple powerful testing with Python',
