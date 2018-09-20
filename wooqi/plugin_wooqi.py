@@ -8,8 +8,10 @@
 General plugin file
 """
 import wooqi_pytest as pytest
+from wooqi.src.plugin_rerunfailures import *
 from wooqi.src.plugin_fixtures import *
 from wooqi.src.pytest_hooks import *
+from wooqi.src.plugin_rerunfailures import *
 from wooqi.src import global_var
 
 
@@ -36,6 +38,17 @@ def pytest_addoption(parser):
         dest='wooqi tag',
         help="wooqi tag to check if the test is runned thanks to wooqi"
     )
+    group = parser.getgroup(
+        "rerunfailures",
+        "re-run failing tests to eliminate flaky failures")
+
+    group._addoption(
+        '--reruns',
+        action="store",
+        dest="reruns",
+        type="int",
+        default=0,
+        help="number of times to re-run failed tests. defaults to 0.")
 
 
 @pytest.fixture(scope="session")
