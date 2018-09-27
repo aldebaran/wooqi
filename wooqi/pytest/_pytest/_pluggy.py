@@ -4,7 +4,7 @@ falls back to importing "pluggy" from the default namespace.
 """
 from __future__ import absolute_import, division, print_function
 try:
-    from wooqi.pytest.wooqi.pytest._pytest.vendored_packages.pluggy import *  # noqa
+    from wooqi.pytest._pytest.vendored_packages.pluggy import *  # noqa
     from wooqi.pytest._pytest.vendored_packages.pluggy import __version__  # noqa
 except ImportError:
     from pluggy import *  # noqa
