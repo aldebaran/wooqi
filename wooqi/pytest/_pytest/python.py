@@ -26,6 +26,8 @@ from wooqi.pytest._pytest.compat import (
 from wooqi.pytest._pytest.outcomes import fail
 from wooqi.pytest._pytest.mark import transfer_markers
 
+from wooqi.pytest._pytest.runner import Skipped
+
 cutdir1 = py.path.local(pluggy.__file__.rstrip("oc"))
 cutdir2 = py.path.local(_pytest.__file__).dirpath()
 cutdir3 = py.path.local(py.__file__).dirpath()
@@ -421,7 +423,7 @@ class Module(main.File, PyCollector):
                 "Traceback:\n"
                 "{traceback}".format(fspath=self.fspath, traceback=formatted_tb)
             )
-        except wooqi.pytest.pytestrunner.Skipped as e:
+        except Skipped as e:
             if e.allow_module_level:
                 raise
             raise self.CollectError(

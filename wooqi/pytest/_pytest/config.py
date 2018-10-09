@@ -379,8 +379,6 @@ class PytestPluginManager(PluginManager):
             try:
                 mod = conftestpath.pyimport()
             except Exception:
-                import pdb
-                pdb.set_trace()
                 raise ConftestImportFailure(conftestpath, sys.exc_info())
 
             self._conftest_plugins.add(mod)
