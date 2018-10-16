@@ -1,5 +1,8 @@
 # Wooqi test sequencer
 
+[![PyPI version fury.io](https://badge.fury.io/py/wooqi.svg)](https://pypi.python.org/pypi/wooqi/)
+[![PyPI license](https://img.shields.io/pypi/l/wooqi.svg)](https://pypi.python.org/pypi/wooqi/)
+
 ## Introduction
 
 **Wooqi** is a plugin for the [Python](https://www.python.org) module named
