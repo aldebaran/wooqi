@@ -13,10 +13,20 @@ from wooqi import __version__
 
 # For development purposes, install it with pip install -user -e
 # or python setup.py develop
+
+
+def get_long_description():
+    """Return readme description"""
+    with open('README.md') as fp:
+        return fp.read()
+
+
 setup(
     version=__version__,
     name="wooqi",
     description="Pytest plugin allowing to parametrize all the test sequence thanks to a config file",
+    long_description=get_long_description(),
+    long_description_content_type='text/markdown',
     packages=find_packages(),
     license='BSD-3',
     entry_points={
