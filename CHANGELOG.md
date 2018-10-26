@@ -22,13 +22,18 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - None
 
 ### Fixed
-- [Issue #35](https://gitlab.aldebaran.lan/production/wooqi/issues/35): Update dependencies versions required.
+-  None
 
 ### Security
 - None
 
 ### Known Issues
 - None
+
+***
+## [1.2.2] - 2018-10-26
+### Fixed
+- [Issue #35](https://gitlab.aldebaran.lan/production/wooqi/issues/35): Update dependencies versions required.
 
 ***
 ## [1.2.1] - 2018-08-07
@@ -76,6 +81,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 *First official release.*
 
 [Unreleased]: https://gitlab.aldebaran.lan/production/wooqi/compare/v1.1.0...master
+[1.2.2]: https://gitlab.aldebaran.lan/production/wooqi/compare/v1.2.1...v1.2.2
+[1.2.1]: https://gitlab.aldebaran.lan/production/wooqi/compare/v1.2.0...v1.2.1
 [1.2.0]: https://gitlab.aldebaran.lan/production/wooqi/compare/v1.1.0...v1.2.0
 [1.1.0]: https://gitlab.aldebaran.lan/production/wooqi/compare/v1.0.2...v1.1.0
 [1.0.2]: https://gitlab.aldebaran.lan/production/wooqi/compare/v1.0.1...v1.0.2
