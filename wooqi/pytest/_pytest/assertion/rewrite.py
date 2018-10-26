@@ -181,10 +181,6 @@ class AssertionRewritingHook(object):
         be re-written on import.
         """
         already_imported = set(names).intersection(set(sys.modules))
-        if already_imported:
-            for name in already_imported:
-                if name not in self._rewritten_names:
-                    self._warn_already_imported(name)
         self._must_rewrite.update(names)
 
     def _warn_already_imported(self, name):
