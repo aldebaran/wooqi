@@ -29,6 +29,8 @@ setup(
     long_description_content_type='text/markdown',
     packages=find_packages(),
     license='BSD-3',
+    url="https://github.com/aldebaran/wooqi",
+    download_url="https://pypi.org/project/wooqi/",
     entry_points={
         'pytest11': [
             'wooqi = wooqi.plugin'], 'console_scripts': ['wooqi = wooqi.__main__:main']},
