@@ -38,10 +38,9 @@ def has_environment_marker_support():
 def main():
     install_requires = ['py>=1.4.33', 'setuptools', 'mock>=1.0.1']
     extras_require = {}
->>>>>>> Add spec plugin source code
     if has_environment_marker_support():
-        extras_require[':python_version=="2.6"']= ['argparse', 'ordereddict']
-        extras_require[':sys_platform=="win32"']= ['colorama']
+        extras_require[':python_version=="2.6"'] = ['argparse', 'ordereddict']
+        extras_require[':sys_platform=="win32"'] = ['colorama']
     else:
         if sys.version_info < (2, 7):
             install_requires.append('argparse')
@@ -52,7 +51,7 @@ def main():
     setup(
         name="wooqi",
         version=__version__,
-        description="Pytest plugin allowing to parametrize all the test sequence thanks to a config file",
+        description="Python module allowing to parametrize all a test sequence thanks to a config file",
         license='BSD-3',
         long_description=get_long_description(),
         long_description_content_type='text/markdown',
@@ -73,7 +72,7 @@ def main():
 
 
 class PyTest(Command):
-    user_options= []
+    user_options = []
 
     def initialize_options(self):
         pass
@@ -83,10 +82,10 @@ class PyTest(Command):
 
     def run(self):
         import subprocess
-        PPATH= [x for x in os.environ.get('PYTHONPATH', '').split(':') if x]
+        PPATH = [x for x in os.environ.get('PYTHONPATH', '').split(':') if x]
         PPATH.insert(0, os.getcwd())
-        os.environ['PYTHONPATH']= ':'.join(PPATH)
-        errno= subprocess.call(
+        os.environ['PYTHONPATH'] = ':'.join(PPATH)
+        errno = subprocess.call(
             [sys.executable, 'wooqi_pytest.py', '--ignore=doc'])
         raise SystemExit(errno)
 

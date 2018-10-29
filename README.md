@@ -5,7 +5,7 @@
 
 ## Introduction
 
-**Wooqi** is a plugin for the [Python](https://www.python.org) module named
+**Wooqi** is a fork of the [Python](https://www.python.org) module named
 [pytest](http://pytest.org). It allows to code tests in a very special way. It is a usefull tool to
 manage a big database of tests, as it simplifies their creation, their maintenance, and their
 execution.
@@ -17,7 +17,7 @@ testing methodology which can be described by the following key points:
 * There is a *test sequences* database, where each sequence is
 composed of one or several test steps picked from the *test steps* database.
 * There are some *common tools* (custom python classes or functions)
-and *fixtures* (introduced by pytest) which all can be used by any test step.
+and *fixtures* which all can be used by any test step.
 * Users can execute a single test sequence with a single command line.
 * All reports and logs of test sequences are saved in a common *reports* database.
 
@@ -52,17 +52,6 @@ Or you can clone the depository, and manually build and install the package:
     pip install dist/<package_name>
 
 Where `<package_name>` is the name of the wooqi package with its version
-
-### Dependencies:
-
-* **pytest**  
-	`pip install pytest --user --upgrade`
-    * **pytest-rerunfailures**  
-	`pip install pytest-rerunfailures --user --upgrade`
-    * **pytest-timeout**  
-	`pip install pytest-timeout --user --upgrade`
-    * **pytest-spec**  
-	`pip install pytest-spec --user --upgrade`
 
 ## Your wooqi project
 
@@ -132,9 +121,9 @@ It is standard python !
  *sequences*). As a result this file contains several sections with some attributes, like this:
 
 ```ini
-[my_section]  
-attr1=value1  
-attr2=value2  
+[my_section]
+attr1=value1
+attr2=value2
 ```
 
 There is one initial section that could be present in these configuration files:
@@ -158,7 +147,6 @@ Here is a list of attributes that could be written in step/action sections:
 
 * **post_fail**: *TBC*
 * **reruns**: *TBC*
-* **timeout**: *TBC*
 * **uut**: *TBC*
 * **uut2**: *TBC*
 * *[...TBC...]*
@@ -169,13 +157,13 @@ If you need to call the same test step several times, there is a special syntax.
 at the end of the test name, increasing the number "X from "0" as follow :
 
 ```ini
-[test_foo_0] ; Start with 0  
+[test_foo_0] ; Start with 0
 uut=dummy1
 
-[test_foo_1] ; Continue with 1  
+[test_foo_1] ; Continue with 1
 uut=dummy2
 
-[test_foo_X] ; and so on...   
+[test_foo_X] ; and so on...
 uut=dummy3
 ```
 
@@ -188,10 +176,10 @@ You must add two attributes in the `[test_info]` section:
 
 In the following example, the sequence *test_b --> test_c --> test_d* will be repeated 2 times:
 
-```ini  
-[test_info]  
-loop_tests=test_b|test_d  
-loop_iter=2  
+```ini
+[test_info]
+loop_tests=test_b|test_d
+loop_iter=2
 
 [test_a]
 
@@ -234,18 +222,18 @@ If sequence fail in loop, all test of the loop are rerun.
 You can defined a previous test or action required.  If the test failed has a requirement, the
 sequence rerun since the test defined to the .ini file.
 
-```ini  
+```ini
 [test_a]
 
 [test_b]
 
-[test_c]  
+[test_c]
 test_required='test_b'
 
-[test_d]  
+[test_d]
 test_required='test_b'
 
-[test_e]  
+[test_e]
 ```
 
 ### Advanced functionalities
@@ -271,15 +259,26 @@ available parameters and their use are explained in this template.
 
 The concept of fixtures is a nice feature provided by Py.test. To get more information about it,
 please read the official [documentation](https://docs.pytest.org/en/latest/fixture.html).
+The only difference with Wooqi, it's just that you have to import the custom pytest module included in Wooqi:
+
+```python
+import wooqi_pytest
+
+@wooqi_pytest.fixture()
+def my_fixture():
+    """Example of wooqi fixture."""
+    pass
+```
+
 
 You can add your own fixtures to your project in any file you want. Then, each one of your steps can
 call a fixture as one of its arguments. These fixtures will be called before and/or after the
 execution of the step in the sequence.
 
-#### Write your own pytest hooks
+#### Write your own wooqi hooks
 
-The Py.test tool offers several hooks that allow to insert custom code in the middle of the
-execution of Py.test. To get more information about these, please read the official
+Wooqi offers all the pytest hooks that allow to insert custom code in the middle of the
+execution of wooqi. To get more information about these, please read the official
 [documentation](https://docs.pytest.org/en/latest/writing_plugins.html#writinghooks).
 
 You can add your own custom hooks in your wooqi project.
