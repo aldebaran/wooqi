@@ -26,7 +26,8 @@ def init_command(args):
         print "[ERROR] usage: wooqi --init-project my_project_name"
     else:
         project_name = args[1]
-        print ">>> Create a new project '" + project_name + "' in '" + os.path.abspath(".") + "' ? (y/n)"
+        print ">>> Create a new project '" + project_name + \
+            "' in '" + os.path.abspath(".") + "' ? (y/n)"
         answer = raw_input()
         if answer == 'y':
             print ">>> Creating project..."
@@ -36,9 +37,11 @@ def init_command(args):
                     project_template_path = os.path.abspath(os.path.join(os.path.dirname(__file__),
                                                                          "project_template"))
                     # ignore files with '.pyc' extension and ignore '__pycache__' directory
-                    ignore_func = lambda d, files: [f for f in files if (os.path.isfile(os.path.join(d, f)) and
-                                                                         f[-4:] == '.pyc') or f == '__pycache__']
-                    shutil.copytree(project_template_path, project_path, ignore=ignore_func)
+
+                    def ignore_func(d, files): return [f for f in files if (os.path.isfile(os.path.join(d, f)) and
+                                                                            f[-4:] == '.pyc') or f == '__pycache__']
+                    shutil.copytree(project_template_path,
+                                    project_path, ignore=ignore_func)
                 except OSError as e:
                     print('Directory not copied. Error: %s' % e)
                 print ">>> Project initialization complete."
@@ -100,11 +103,12 @@ def main(args=None):
         print("*********************************")
         print("***** Wooqi tests sequencer *****")
         print("*********************************")
-        exit(os.system("wooqi_pytest " + arguments + " --spec --wooqi"))
+        exit(os.system("wooqi_pytest " + arguments + " --wooqi_spec --wooqi"))
     else:
         print("/!\ Error: unknown Wooqi command ! Please see usage below.")
         print_usage()
         exit(-1)
+
 
 if __name__ == '__main__':
     sys.exit(main())

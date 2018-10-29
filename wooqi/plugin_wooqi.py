@@ -43,7 +43,7 @@ def pytest_addoption(parser):
         "re-run failing tests to eliminate flaky failures")
 
     group._addoption(
-        '--reruns',
+        '--wooqi_reruns',
         action="store",
         dest="reruns",
         type="int",
@@ -52,7 +52,7 @@ def pytest_addoption(parser):
 
     group = parser.getgroup('general')
     group.addoption(
-        '--spec',
+        '--wooqi_spec',
         action='store_true',
         dest='spec',
         help='Print test result in specification format'
