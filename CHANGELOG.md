@@ -7,7 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ***
 ## [Unreleased] - XXXXX-XX-XX
 ### Enhanced
-- None
+- [Issue #13](https://gitlab.aldebaran.lan/production/wooqi/issues/13): Do not base the sequencer on Pytest anymore.
+- [Issue #28](https://gitlab.aldebaran.lan/production/wooqi/issues/28): Fork Pytest inside Wooqi.
 
 ### Added
 - None
