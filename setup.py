@@ -14,6 +14,15 @@ import pkg_resources
 from setuptools import setup, Command
 from wooqi import __version__
 
+# For development purposes, install it with pip install -user -e
+# or python setup.py develop
+
+
+def get_long_description():
+    """Return readme description"""
+    with open('README.md') as fp:
+        return fp.read()
+
 
 def has_environment_marker_support():
     """
@@ -24,7 +33,7 @@ def has_environment_marker_support():
 
     References:
 
-    #defining-conditional-dependencies
+    # defining-conditional-dependencies
     * https://wheel.readthedocs.io/en/latest/index.html
     * https://www.python.org/dev/peps/pep-0426/#environment-markers
     """
@@ -60,7 +69,7 @@ def main():
         entry_points={'console_scripts': [
             'wooqi = wooqi.__main__:main', 'wooqi_pytest=wooqi.pytest.pytest:main'], 'pytest11': ['wooqi = wooqi.plugin_wooqi']},
         platforms=['unix', 'linux', 'osx', 'cygwin', 'win32'],
-        cmdclass={'test': PyTest},
+        cmdclass={'test': WooqiTest},
         setup_requires=['setuptools-scm'],
         install_requires=install_requires,
         extras_require=extras_require,
@@ -71,7 +80,7 @@ def main():
     )
 
 
-class PyTest(Command):
+class WooqiTest(Command):
     user_options = []
 
     def initialize_options(self):
@@ -82,11 +91,8 @@ class PyTest(Command):
 
     def run(self):
         import subprocess
-        PPATH = [x for x in os.environ.get('PYTHONPATH', '').split(':') if x]
-        PPATH.insert(0, os.getcwd())
-        os.environ['PYTHONPATH'] = ':'.join(PPATH)
         errno = subprocess.call(
-            [sys.executable, 'wooqi_pytest.py', '--ignore=doc'])
+            ["./run_wooqi_tests.sh"])
         raise SystemExit(errno)
 
 

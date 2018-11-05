@@ -36,10 +36,11 @@ def init_command(args):
                 try:
                     project_template_path = os.path.abspath(os.path.join(os.path.dirname(__file__),
                                                                          "project_template"))
-                    # ignore files with '.pyc' extension and ignore '__pycache__' directory
 
-                    def ignore_func(d, files): return [f for f in files if (os.path.isfile(os.path.join(d, f)) and
-                                                                            f[-4:] == '.pyc') or f == '__pycache__']
+                    # ignore files with '.pyc' extension and ignore '__pycache__' directory
+                    def ignore_func(d, files):
+                        return [f for f in files if (os.path.isfile(os.path.join(d, f)) and
+                                                     f[-4:] == '.pyc') or f == '__pycache__']
                     shutil.copytree(project_template_path,
                                     project_path, ignore=ignore_func)
                 except OSError as e:
@@ -52,8 +53,9 @@ def init_command(args):
 
 def print_usage():
     """
-        Print the usage of the Wooqi command
+    Print the usage of the Wooqi command
     """
+
     usage_txt = """
 *********************************
 ***** Wooqi tests sequencer *****
