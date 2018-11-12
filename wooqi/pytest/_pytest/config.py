@@ -86,7 +86,8 @@ def filename_arg(path, optname):
     :optname: name of the option
     """
     if os.path.isdir(path):
-        raise UsageError("{0} must be a filename, given: {1}".format(optname, path))
+        raise UsageError(
+            "{0} must be a filename, given: {1}".format(optname, path))
     return path
 
 
@@ -97,7 +98,8 @@ def directory_arg(path, optname):
     :optname: name of the option
     """
     if not os.path.isdir(path):
-        raise UsageError("{0} must be a directory, given: {1}".format(optname, path))
+        raise UsageError(
+            "{0} must be a directory, given: {1}".format(optname, path))
     return path
 
 
@@ -183,7 +185,8 @@ class PytestPluginManager(PluginManager):
     """
 
     def __init__(self):
-        super(PytestPluginManager, self).__init__("pytest", implprefix="pytest_")
+        super(PytestPluginManager, self).__init__(
+            "pytest", implprefix="pytest_")
         self._conftest_plugins = set()
 
         # state related to local conftest plugins
@@ -234,7 +237,8 @@ class PytestPluginManager(PluginManager):
             return
 
         method = getattr(plugin, name)
-        opts = super(PytestPluginManager, self).parse_hookimpl_opts(plugin, name)
+        opts = super(PytestPluginManager,
+                     self).parse_hookimpl_opts(plugin, name)
         if opts is not None:
             for name in ("tryfirst", "trylast", "optionalhook", "hookwrapper"):
                 opts.setdefault(name, hasattr(method, name))
@@ -253,7 +257,8 @@ class PytestPluginManager(PluginManager):
     def _verify_hook(self, hook, hookmethod):
         super(PytestPluginManager, self)._verify_hook(hook, hookmethod)
         if "__multicall__" in hookmethod.argnames:
-            fslineno = wooqi.pytest._pytest._code.getfslineno(hookmethod.function)
+            fslineno = wooqi.pytest._pytest._code.getfslineno(
+                hookmethod.function)
             warning = dict(code="I1",
                            fslocation=fslineno,
                            nodeid=None,
@@ -558,7 +563,8 @@ class Parser:
                     a = option.attrs()
                     arggroup.add_argument(*n, **a)
         # bash like autocompletion for dirs (appending '/')
-        optparser.add_argument(FILE_OR_DIR, nargs='*').completer = filescompleter
+        optparser.add_argument(
+            FILE_OR_DIR, nargs='*').completer = filescompleter
         return optparser
 
     def parse_setoption(self, args, option, namespace=None):
@@ -927,7 +933,8 @@ class Config(object):
             import wooqi_pytest as pytest
             setns(pytest, dic)
         self.hook.pytest_namespace.call_historic(do_setns, {})
-        self.hook.pytest_addoption.call_historic(kwargs=dict(parser=self._parser))
+        self.hook.pytest_addoption.call_historic(
+            kwargs=dict(parser=self._parser))
 
     def add_cleanup(self, func):
         """ Add a function to be called when the config object gets out of
@@ -968,7 +975,8 @@ class Config(object):
         else:
             style = "native"
         excrepr = excinfo.getrepr(funcargs=True,
-                                  showlocals=getattr(option, 'showlocals', False),
+                                  showlocals=getattr(
+                                      option, 'showlocals', False),
                                   style=style,
                                   )
         res = self.hook.pytest_internalerror(excrepr=excrepr,
@@ -1005,12 +1013,14 @@ class Config(object):
 
     @hookimpl(trylast=True)
     def pytest_load_initial_conftests(self, early_config):
-        self.pluginmanager._set_initial_conftests(early_config.known_args_namespace)
+        self.pluginmanager._set_initial_conftests(
+            early_config.known_args_namespace)
 
     def _initini(self, args):
         ns, unknown_args = self._parser.parse_known_and_unknown_args(
             args, namespace=self.option.copy())
-        r = determine_setup(ns.inifilename, ns.file_or_dir + unknown_args, warnfunc=self.warn)
+        r = determine_setup(ns.inifilename, ns.file_or_dir +
+                            unknown_args, warnfunc=self.warn)
         self.rootdir, self.inifile, self.inicfg = r
         self._parser.extra_info['rootdir'] = self.rootdir
         self._parser.extra_info['inifile'] = self.inifile
@@ -1054,7 +1064,7 @@ class Config(object):
 
         package_files = (
             entry.split(',')[0]
-            for entrypoint in pkg_resources.iter_entry_points('pytest11')
+            for entrypoint in pkg_resources.iter_entry_points('wooqi_pytest11')
             for metadata in metadata_files
             for entry in entrypoint.dist._get_metadata(metadata)
         )
@@ -1087,7 +1097,7 @@ class Config(object):
         self._checkversion()
         self._consider_importhook(args)
         self.pluginmanager.consider_preparse(args)
-        self.pluginmanager.load_setuptools_entrypoints('pytest11')
+        self.pluginmanager.load_setuptools_entrypoints('wooqi_pytest11')
         self.pluginmanager.consider_env()
         self.known_args_namespace = ns = self._parser.parse_known_args(
             args, namespace=self.option.copy())
@@ -1115,7 +1125,8 @@ class Config(object):
             if myver < ver:
                 raise pytest.UsageError(
                     "%s:%d: requires pytest-%s, actual pytest-%s'" % (
-                        self.inicfg.config.path, self.inicfg.lineof('minversion'),
+                        self.inicfg.config.path, self.inicfg.lineof(
+                            'minversion'),
                         minver, pytest.__version__))
 
     def parse(self, args, addopts=True):
@@ -1130,7 +1141,8 @@ class Config(object):
         self.hook.pytest_cmdline_preparse(config=self, args=args)
         self._parser.after_preparse = True
         try:
-            args = self._parser.parse_setoption(args, self.option, namespace=self.option)
+            args = self._parser.parse_setoption(
+                args, self.option, namespace=self.option)
             if not args:
                 cwd = os.getcwd()
                 if cwd == self.rootdir:
@@ -1216,7 +1228,8 @@ class Config(object):
                 try:
                     (key, user_ini_value) = ini_config.split("=", 1)
                 except ValueError:
-                    raise UsageError("-o/--override-ini expects option=value style.")
+                    raise UsageError(
+                        "-o/--override-ini expects option=value style.")
                 if key == name:
                     value = user_ini_value
         return value

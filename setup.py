@@ -67,7 +67,7 @@ def main():
         url="https://github.com/aldebaran/wooqi",
         download_url="https://pypi.org/project/wooqi/",
         entry_points={'console_scripts': [
-            'wooqi = wooqi.__main__:main', 'wooqi_pytest=wooqi_pytest:main'], 'pytest11': ['wooqi = wooqi.plugin_wooqi']},
+            'wooqi = wooqi.__main__:main', 'wooqi_pytest=wooqi_pytest:main'], 'wooqi_pytest11': ['wooqi = wooqi.plugin_wooqi']},
         platforms=['unix', 'linux', 'osx', 'cygwin', 'win32'],
         cmdclass={'test': WooqiTest},
         setup_requires=['setuptools-scm'],
