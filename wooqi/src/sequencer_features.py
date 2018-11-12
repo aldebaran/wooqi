@@ -9,7 +9,7 @@ Sequencer features
 """
 import os
 import time
-import pytest
+import wooqi_pytest as pytest
 from wooqi.src import global_var
 
 

@@ -10,7 +10,7 @@ Wooqi fixtures
 import os
 import time
 import ConfigParser
-import pytest
+import wooqi_pytest as pytest
 from wooqi.src.logger import init_logger
 from wooqi.src import global_var
 
