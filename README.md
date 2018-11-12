@@ -33,13 +33,6 @@ using only one tool (the **Wooqi** plugin) to execute any test in any project.
 For the reasons listed above, Wooqi can be considered as an independant tool instead of a simple
 pytest plugin.
 
-**Contact:**  If you need some help about Wooqi, or if you want to contribute, please contact one of
-the following core developers:
-
-* Sebastien MARTIN - <semartin@softbankrobotics.com>
-* Antoine MARTIN - <amartin@softbankrobotics.com>
-* Romain TAPREST - <rtaprest@softbankrobotics.com>
-
 ## Installation
 
 You can install wooqi as a pip package.
