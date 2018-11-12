@@ -36,12 +36,12 @@ def pytest_addoption(parser):
 
 def pytest_configure(config):
     # This might be called multiple times. Only take the first.
-    global wooqi.pytest._pytest_fullpath
+    global _pytest_fullpath
     try:
-        wooqi.pytest._pytest_fullpath
+        _pytest_fullpath
     except NameError:
-        wooqi.pytest._pytest_fullpath = os.path.abspath(pytest.__file__.rstrip("oc"))
-        wooqi.pytest._pytest_fullpath = wooqi.pytest._pytest_fullpath.replace("$py.class", ".py")
+        _pytest_fullpath = os.path.abspath(pytest.__file__.rstrip("oc"))
+        _pytest_fullpath = _pytest_fullpath.replace("$py.class", ".py")
 
     if config.getvalue("lsof"):
         checker = LsofFdLeakChecker()
@@ -165,7 +165,7 @@ def anypython(request):
 
 
 @pytest.fixture
-def wooqi.pytest._pytest(request):
+def _pytest(request):
     """ Return a helper which offers a gethookrecorder(hook)
     method which returns a HookRecorder instance which helps
     to make assertions about called hooks.
@@ -219,7 +219,8 @@ class HookRecorder:
         def after(outcome, hook_name, hook_impls, kwargs):
             pass
 
-        self._undo_wrapping = pluginmanager.add_hookcall_monitoring(before, after)
+        self._undo_wrapping = pluginmanager.add_hookcall_monitoring(
+            before, after)
 
     def finish_recording(self):
         self._undo_wrapping()
@@ -394,7 +395,8 @@ class RunResult:
             'failed': d.get('failed', 0),
             'error': d.get('error', 0),
         }
-        assert obtained == dict(passed=passed, skipped=skipped, failed=failed, error=error)
+        assert obtained == dict(
+            passed=passed, skipped=skipped, failed=failed, error=error)
 
 
 class Testdir:
@@ -507,7 +509,8 @@ class Testdir:
                     s = py.builtin._totext(s, encoding=encoding)
                 return s
 
-            source_unicode = "\n".join([my_totext(line) for line in source.lines])
+            source_unicode = "\n".join([my_totext(line)
+                                        for line in source.lines])
             source = py.builtin._totext(source_unicode)
             content = source.strip().encode(encoding)  # + "\n"
             # content = content.rstrip() + "\n"
@@ -925,7 +928,8 @@ class Testdir:
             str(os.getcwd()), env.get('PYTHONPATH', '')]))
         kw['env'] = env
 
-        popen = subprocess.Popen(cmdargs, stdin=subprocess.PIPE, stdout=stdout, stderr=stderr, **kw)
+        popen = subprocess.Popen(
+            cmdargs, stdin=subprocess.PIPE, stdout=stdout, stderr=stderr, **kw)
         popen.stdin.close()
 
         return popen
@@ -979,7 +983,7 @@ class Testdir:
     def _getpytestargs(self):
         # we cannot use "(sys.executable,script)"
         # because on windows the script is e.g. a pytest.exe
-        return (sys.executable, wooqi.pytest._pytest_fullpath,)  # noqa
+        return (sys.executable, _pytest_fullpath,)  # noqa
 
     def runpython(self, script):
         """Run a python script using sys.executable as interpreter.
