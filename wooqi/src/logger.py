@@ -94,4 +94,4 @@ def init_logger(filename, directory, console_logger=True, maxSize=10000000):
         logger_gv.init = True
         return logger_gv
     except Exception, e:
-        print e
+        print(e)

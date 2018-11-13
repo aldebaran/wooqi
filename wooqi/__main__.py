@@ -18,19 +18,19 @@ def init_command(args):
     """
     Manage the `wooqi init` command
     """
-    print "***************************************"
-    print "***** Initiliazing Wooqi project ******"
-    print "***************************************"
-    print ""
+    print("***************************************")
+    print("***** Initiliazing Wooqi project ******")
+    print("***************************************")
+    print("\n")
     if not len(args) > 1:
-        print "[ERROR] usage: wooqi --init-project my_project_name"
+        print("[ERROR] usage: wooqi --init-project my_project_name")
     else:
         project_name = args[1]
-        print ">>> Create a new project '" + project_name + \
-            "' in '" + os.path.abspath(".") + "' ? (y/n)"
+        print(">>> Create a new project '" + project_name +
+              "' in '" + os.path.abspath(".") + "' ? (y/n)")
         answer = raw_input()
         if answer == 'y':
-            print ">>> Creating project..."
+            print(">>> Creating project...")
             project_path = os.path.abspath(project_name)
             if not os.path.isdir(project_path):
                 try:
@@ -45,10 +45,10 @@ def init_command(args):
                                     project_path, ignore=ignore_func)
                 except OSError as e:
                     print('Directory not copied. Error: %s' % e)
-                print ">>> Project initialization complete."
+                print(">>> Project initialization complete.")
             else:
-                print ">>> Directory " + project_name + " already exists"
-                print ">>> Project initialization failed."
+                print(">>> Directory " + project_name + " already exists")
+                print(">>> Project initialization failed.")
 
 
 def print_usage():

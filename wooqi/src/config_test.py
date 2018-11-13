@@ -26,7 +26,7 @@ class ConfigTest(object):
         except Exception, error:
             msg = 'Problem while parsing configuration file %s (%s)' % (
                 config_file, error)
-            print msg
+            print(msg)
             raise
         if len(file_parse) == 0:
             self.config_file_exists = False
@@ -39,7 +39,8 @@ class ConfigTest(object):
             for option in parser.options(section):
                 dict_tmp[option] = parser.get(section, option)
             file_config[section] = dict_tmp
-            file_config[section]["test_order"] = file_config.keys().index(section) + 1
+            file_config[section]["test_order"] = file_config.keys().index(
+                section) + 1
 
         self.file_config = file_config
         self.current_test = None
@@ -86,7 +87,7 @@ class ConfigTest(object):
                     return dico
 
         except BaseException as error:
-            print error
+            print(error)
             return None
 
     @staticmethod
@@ -284,7 +285,7 @@ class ConfigTest(object):
             else:
                 return None
         except BaseException as error:
-            print error
+            print(error)
             return None
 
     def timeout(self, test_name):
@@ -298,7 +299,7 @@ class ConfigTest(object):
             else:
                 return None
         except BaseException as error:
-            print error
+            print(error)
 
     def sequence(self, test_name):
         """
