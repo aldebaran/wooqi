@@ -258,3 +258,5 @@ else
     echo -e "- Cache feature | Restart loop with UUTS different tests / INITIALIZATION --> ${RED}FAILED${NC}"
     result=1
 fi
+
+exit $result

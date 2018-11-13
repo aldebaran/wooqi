@@ -82,3 +82,5 @@ else
     echo -e "- Looping feature | Same test with UUTs --> ${RED}FAILED${NC}"
     result=1
 fi
+
+exit $result
