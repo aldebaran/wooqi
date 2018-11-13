@@ -2,6 +2,7 @@
 
 [![PyPI version fury.io](https://badge.fury.io/py/wooqi.svg)](https://pypi.python.org/pypi/wooqi/)
 [![PyPI license](https://img.shields.io/pypi/l/wooqi.svg)](https://pypi.python.org/pypi/wooqi/)
+[![Build Status](https://travis-ci.org/aldebaran/wooqi.svg?branch=master)](https://travis-ci.org/aldebaran/wooqi)
 
 ## Introduction
 
