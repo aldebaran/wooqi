@@ -7,9 +7,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ***
 ## [Unreleased] - XXXXX-XX-XX
 ### Enhanced
-- [Issue #13](https://gitlab.aldebaran.lan/production/wooqi/issues/13): Do not base the sequencer on Pytest anymore.
-- [Issue #28](https://gitlab.aldebaran.lan/production/wooqi/issues/28): Fork Pytest inside Wooqi.
-- Python 3 compatibility.
+- None
 
 ### Added
 - None
@@ -31,6 +29,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Known Issues
 - None
+
+***
+## [2.0.0] - 2018-11-14
+### Enhanced
+- [Issue #13](https://gitlab.aldebaran.lan/production/wooqi/issues/13): Do not base the sequencer on Pytest anymore.
+- [Issue #28](https://gitlab.aldebaran.lan/production/wooqi/issues/28): Fork Pytest inside Wooqi.
+- Python 3 compatibility.
 
 ***
 ## [1.2.2] - 2018-10-26
@@ -82,7 +87,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [1.0.0] - 2017-03-29
 *First official release.*
 
-[Unreleased]: https://gitlab.aldebaran.lan/production/wooqi/compare/v1.1.0...master
+[Unreleased]: https://gitlab.aldebaran.lan/production/wooqi/compare/v2.0.0...master
+[2.0.0]: https://gitlab.aldebaran.lan/production/wooqi/compare/v1.2.2...v2.0.0
 [1.2.2]: https://gitlab.aldebaran.lan/production/wooqi/compare/v1.2.1...v1.2.2
 [1.2.1]: https://gitlab.aldebaran.lan/production/wooqi/compare/v1.2.0...v1.2.1
 [1.2.0]: https://gitlab.aldebaran.lan/production/wooqi/compare/v1.1.0...v1.2.0
