@@ -163,7 +163,8 @@ def filter_order_tests(config, items):
             first_arg = item_args[0]
         else:
             first_arg = None
-        config_test_name, iter_number = item_loop_option_analyse(item, basic_test_name, first_arg)
+        config_test_name, iter_number = item_loop_option_analyse(
+            item, basic_test_name, first_arg)
 
         # If len(item_args) is 1, item_args[0] is a uut and he exists
         if "add_call" in item.keywords.__dict__["_markers"].keys():
@@ -180,7 +181,8 @@ def filter_order_tests(config, items):
                 if item_args[uut_index + 1] not in global_var['config'].uut2(config_test_name):
                     # uut2 not used for this test
                     continue
-        test_order = int(global_var['config'].file_config[config_test_name]['test_order'])
+        test_order = int(
+            global_var['config'].file_config[config_test_name]['test_order'])
         if iter_number != 0:
             # Create second list only with test in loop option after the first iteration
             if not list_loop_temp:
@@ -193,12 +195,12 @@ def filter_order_tests(config, items):
             list_temp.append([test_order, item])
 
     # Order items
-    list_temp.sort()
+    list_temp.sort(key=lambda x: x[0])
     items_temp = []
     for item in list_temp:
         if str(item[1]).count('LOOP_TEST'):
             # Insert all tests of loop option instead of fake item
-            list_loop_temp.sort()
+            list_loop_temp.sort(key=lambda x: (x[0], x[1]))
             for loop_item in list_loop_temp:
                 items_temp.append(loop_item[2])
         else:

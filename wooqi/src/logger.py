@@ -11,7 +11,7 @@ import os
 import sys
 import logging
 import logging.handlers
-from ConfigParser import RawConfigParser, NoOptionError, NoSectionError
+from configparser import RawConfigParser, NoOptionError, NoSectionError
 from wooqi.src import logger_gv
 
 

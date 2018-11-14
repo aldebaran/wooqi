@@ -11,7 +11,7 @@ import os
 import re
 from sys import exit
 import collections
-from ConfigParser import SafeConfigParser
+from configparser import SafeConfigParser
 
 
 class ConfigTest(object):
@@ -23,7 +23,7 @@ class ConfigTest(object):
             parser = SafeConfigParser()
             parser.optionxform = str
             file_parse = parser.read(config_file)
-        except Exception, error:
+        except Exception as error:
             msg = 'Problem while parsing configuration file %s (%s)' % (
                 config_file, error)
             print(msg)
@@ -39,7 +39,7 @@ class ConfigTest(object):
             for option in parser.options(section):
                 dict_tmp[option] = parser.get(section, option)
             file_config[section] = dict_tmp
-            file_config[section]["test_order"] = file_config.keys().index(
+            file_config[section]["test_order"] = list(file_config.keys()).index(
                 section) + 1
 
         self.file_config = file_config
@@ -95,10 +95,10 @@ class ConfigTest(object):
         """
         Return range list
         """
-        range_args = map(int, re.findall("([0-9]+)", string))
+        range_args = list(map(int, re.findall("([0-9]+)", string)))
         if len(range_args) == 2:
             range_args.append(1)
-        return map(str, range(range_args[0], range_args[1], range_args[2]))
+        return list(map(str, list(range(range_args[0], range_args[1], range_args[2]))))
 
     @staticmethod
     def _get_folders(string):
