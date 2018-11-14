@@ -9,7 +9,7 @@ Wooqi fixtures
 """
 import os
 import time
-import ConfigParser
+import configparser
 import wooqi_pytest as pytest
 from wooqi.src.logger import init_logger
 from wooqi.src import global_var
@@ -19,7 +19,7 @@ def read_cfg(cfg_file):
     """
     Read config file
     """
-    cfg = ConfigParser.ConfigParser()
+    cfg = configparser.ConfigParser()
     cfg.read(cfg_file)
     return cfg
 
@@ -140,7 +140,8 @@ def logger(log_name, log_folder, request):
     """
     # -s option is a shortcut for --capture=no
     if global_var['config'] != None:
-        console_logger = True if request.config.getoption('--capture') == 'no' else False
+        console_logger = True if request.config.getoption(
+            '--capture') == 'no' else False
         logger = init_logger(log_name, log_folder, console_logger)
         logger.debug('=====================================================')
         logger.debug('================ BEGINNING OF SCRIPT ================')

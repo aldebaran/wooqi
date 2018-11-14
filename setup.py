@@ -45,7 +45,8 @@ def has_environment_marker_support():
 
 
 def main():
-    install_requires = ['py>=1.4.33', 'setuptools', 'mock>=1.0.1']
+    install_requires = ['py>=1.4.33', 'setuptools',
+                        'mock>=1.0.1', 'configparser']
     extras_require = {}
     if has_environment_marker_support():
         extras_require[':python_version=="2.6"'] = ['argparse', 'ordereddict']

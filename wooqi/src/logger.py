@@ -11,7 +11,7 @@ import os
 import sys
 import logging
 import logging.handlers
-from ConfigParser import RawConfigParser, NoOptionError, NoSectionError
+from configparser import RawConfigParser, NoOptionError, NoSectionError
 from wooqi.src import logger_gv
 
 
@@ -93,5 +93,5 @@ def init_logger(filename, directory, console_logger=True, maxSize=10000000):
         logger_gv.setLevel(logging.DEBUG)
         logger_gv.init = True
         return logger_gv
-    except Exception, e:
-        print e
+    except Exception as e:
+        print(e)

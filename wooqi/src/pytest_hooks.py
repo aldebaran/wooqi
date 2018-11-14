@@ -51,7 +51,8 @@ def pytest_runtest_makereport(item, call):
         if call.when == 'call' or (call.when == 'setup' and rep.outcome == 'failed'):
             skip = False
             if "reruns" in item.keywords.__dict__.keys():
-                item.keywords.__dict__["reruns"] = item.keywords.__dict__["reruns"] + 1
+                item.keywords.__dict__[
+                    "reruns"] = item.keywords.__dict__["reruns"] + 1
             if 'failed' in result:
                 logger_gv.error(result)
             if 'skipped' in result:
@@ -105,12 +106,13 @@ def pytest_report_header(config):
     if config.getoption("--seq-config") != None and config.getoption("--wooqi") is True:
         global_var['config'] = ConfigTest(config.getoption("--seq-config"))
         if global_var['config'].config_file_exists is False:
-            print
-            print "*****************************************************************"
-            print "-- ERROR --"
-            print "The config file %s doesn't exist" % config.getoption("--seq-config")
-            print "*****************************************************************"
-            print
+            print("\n")
+            print("*****************************************************************")
+            print("-- ERROR --")
+            print("The config file %s doesn't exist" %
+                  config.getoption("--seq-config"))
+            print("*****************************************************************")
+            print("\n")
 
         global_var['result'] = True
         if config.option.verbose > 0:
@@ -167,33 +169,33 @@ def pytest_sessionfinish(exitstatus, session):
     if global_var['config'] != None:
         if logger_gv.init:
             logger_gv.debug('global result of the test')
-        print "\n"
+        print("\n")
         if exitstatus == 0:
             if logger_gv.init:
                 logger_gv.debug('---> passed')
-            print
-            print 'ssssssss       ssss          ssssssss     ssssssss'
-            print 'ss    ss     ssss ssss       ssssssss     ssssssss'
-            print 'ss    ss    ssss   ssss      ss           ss'
-            print 'ss    ss   sssss   sssss     ss           ss'
-            print 'ssssssss   sssssssssssss     ssssssss     ssssssss'
-            print 'ss         sss       sss           ss           ss'
-            print 'ss         sss       sss           ss           ss'
-            print 'ss         sss       sss     ssssssss     ssssssss'
-            print 'ss         sss       sss     ssssssss     ssssssss'
+            print("\n")
+            print('ssssssss       ssss          ssssssss     ssssssss')
+            print('ss    ss     ssss ssss       ssssssss     ssssssss')
+            print('ss    ss    ssss   ssss      ss           ss')
+            print('ss    ss   sssss   sssss     ss           ss')
+            print('ssssssss   sssssssssssss     ssssssss     ssssssss')
+            print('ss         sss       sss           ss           ss')
+            print('ss         sss       sss           ss           ss')
+            print('ss         sss       sss     ssssssss     ssssssss')
+            print('ss         sss       sss     ssssssss     ssssssss')
         else:
             if logger_gv.init:
                 logger_gv.debug('---> failed')
-            print
-            print 'ssssssss       ssss             sss       s'
-            print 'ssssssss     ssss ssss          sss       ss'
-            print 'sss         ssss   ssss         sss       ss'
-            print 'sss        sssss   sssss        sss       ss'
-            print 'ssssssss   sssssssssssss        sss       ss'
-            print 'ssssssss   sss       sss        sss       ss'
-            print 'ss         sss       sss        sss       ss'
-            print 'ss         sss       sss        sss       ssssssss'
-            print 'ss         sss       sss        sss       ssssssss'
+            print("\n")
+            print('ssssssss       ssss             sss       s')
+            print('ssssssss     ssss ssss          sss       ss')
+            print('sss         ssss   ssss         sss       ss')
+            print('sss        sssss   sssss        sss       ss')
+            print('ssssssss   sssssssssssss        sss       ss')
+            print('ssssssss   sss       sss        sss       ss')
+            print('ss         sss       sss        sss       ss')
+            print('ss         sss       sss        sss       ssssssss')
+            print('ss         sss       sss        sss       ssssssss')
 
         if logger_gv.init:
             logger_gv.debug('===============================================')
