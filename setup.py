@@ -11,7 +11,7 @@ import os
 import sys
 import setuptools
 import pkg_resources
-from setuptools import setup, Command
+from setuptools import setup, Command, find_packages
 from wooqi import __version__
 
 # For development purposes, install it with pip install -user -e
@@ -74,8 +74,8 @@ def main():
         setup_requires=['setuptools-scm'],
         install_requires=install_requires,
         extras_require=extras_require,
-        packages=['wooqi.pytest._pytest', 'wooqi.pytest._pytest.assertion',
-                  'wooqi.pytest._pytest._code', 'wooqi.pytest._pytest.vendored_packages'],
+        packages=find_packages(),
+        include_package_data=True,
         py_modules=['wooqi_pytest'],
         zip_safe=False,
     )
