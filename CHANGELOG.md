@@ -31,6 +31,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - None
 
 ***
+## [2.0.1] - 2018-11-15
+### Fixed
+- Packages management hotfix.
+
+***
 ## [2.0.0] - 2018-11-14
 ### Enhanced
 - [Issue #13](https://gitlab.aldebaran.lan/production/wooqi/issues/13): Do not base the sequencer on Pytest anymore.
@@ -87,7 +92,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [1.0.0] - 2017-03-29
 *First official release.*
 
-[Unreleased]: https://gitlab.aldebaran.lan/production/wooqi/compare/v2.0.0...master
+[Unreleased]: https://gitlab.aldebaran.lan/production/wooqi/compare/v2.0.1...master
+[2.0.1]: https://gitlab.aldebaran.lan/production/wooqi/compare/v2.0.0...v2.0.1
 [2.0.0]: https://gitlab.aldebaran.lan/production/wooqi/compare/v1.2.2...v2.0.0
 [1.2.2]: https://gitlab.aldebaran.lan/production/wooqi/compare/v1.2.1...v1.2.2
 [1.2.1]: https://gitlab.aldebaran.lan/production/wooqi/compare/v1.2.0...v1.2.1
