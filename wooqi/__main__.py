@@ -36,8 +36,9 @@ def init_command(args):
                     project_template_path = os.path.abspath(os.path.join(os.path.dirname(__file__),
                                                                          "project_template"))
                     # ignore files with '.pyc' extension and ignore '__pycache__' directory
-                    ignore_func = lambda d, files: [f for f in files if (os.path.isfile(os.path.join(d, f)) and
-                                                                         f[-4:] == '.pyc') or f == '__pycache__']
+
+                    def ignore_func(d, files): return [f for f in files if (os.path.isfile(os.path.join(d, f)) and
+                                                                            f[-4:] == '.pyc') or f == '__pycache__']
                     shutil.copytree(project_template_path, project_path, ignore=ignore_func)
                 except OSError as e:
                     print('Directory not copied. Error: %s' % e)
@@ -100,11 +101,19 @@ def main(args=None):
         print("*********************************")
         print("***** Wooqi tests sequencer *****")
         print("*********************************")
-        exit(os.system("py.test " + arguments + " --spec --wooqi"))
+        # On Unix, the return value is a 16-bit number that contains
+        # two different pieces of information. From the documentation:
+        # low byte is the signal number that killed the process
+        # high byte is the exit status (if the signal number is zero)
+        val = os.system("py.test " + arguments + " --spec --wooqi")
+        if val & 0xF > 0:
+            val = val + 255
+        exit(val >> 8)
     else:
         print("/!\ Error: unknown Wooqi command ! Please see usage below.")
         print_usage()
         exit(-1)
+
 
 if __name__ == '__main__':
     sys.exit(main())

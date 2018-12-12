@@ -22,13 +22,18 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - None
 
 ### Fixed
--  None
+- None
 
 ### Security
 - None
 
 ### Known Issues
 - None
+
+***
+## [1.2.3] - 2018-12-12
+### Fixed
+- Fix exit status in main to get msb value
 
 ***
 ## [1.2.2] - 2018-10-26
