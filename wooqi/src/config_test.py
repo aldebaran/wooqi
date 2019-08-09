@@ -11,7 +11,7 @@ import os
 import re
 from sys import exit
 import collections
-from configparser import SafeConfigParser
+from ConfigParser import SafeConfigParser
 
 
 class ConfigTest(object):
@@ -24,14 +24,13 @@ class ConfigTest(object):
             parser.optionxform = str
             file_parse = parser.read(config_file)
         except Exception as error:
-            msg = 'Problem while parsing configuration file %s (%s)' % (
-                config_file, error)
+            msg = 'Problem while parsing configuration file {} ({})'.format(config_file, error)
             print(msg)
             raise
-        if len(file_parse) == 0:
-            self.config_file_exists = False
-        else:
+        if len(file_parse):
             self.config_file_exists = True
+        else:
+            self.config_file_exists = False
 
         file_config = collections.OrderedDict()
         for section in parser.sections():
@@ -39,8 +38,7 @@ class ConfigTest(object):
             for option in parser.options(section):
                 dict_tmp[option] = parser.get(section, option)
             file_config[section] = dict_tmp
-            file_config[section]["test_order"] = list(file_config.keys()).index(
-                section) + 1
+            file_config[section]["test_order"] = list(file_config.keys()).index(section) + 1
 
         self.file_config = file_config
         self.current_test = None
@@ -50,15 +48,15 @@ class ConfigTest(object):
         """
         Get paramater
         """
+        parameter = None
         try:
             if param == "Default":
-                return param
+                parameter = param
             elif "|" not in param and ":" not in param:
                 if evaluate:
-                    return eval(param)
+                    parameter = eval(param)
                 else:
-                    return param
-
+                    parameter = param
             else:
                 dico = {}
                 params = param.split("|")
@@ -68,27 +66,24 @@ class ConfigTest(object):
                         dico[tab[0]] = eval(tab[1])
                     else:
                         dico[tab[0]] = tab[1]
+
                 if uut is not None and uut2 is not None:
-                    uuts_name = "%s-%s" % (uut, uut2)
+                    uuts_name = "{}-{}".format(uut, uut2)
                     if uuts_name in dico.keys():
-                        return dico[uuts_name]
+                        parameter = dico[uuts_name]
                     elif "Default" in dico.keys():
-                        return dico["Default"]
-                    else:
-                        return None
+                        parameter = dico["Default"]
                 elif uut is not None:
                     if uut in dico.keys():
-                        return dico[uut]
+                        parameter = dico[uut]
                     elif "Default" in dico.keys():
-                        return dico["Default"]
-                    else:
-                        return None
+                        parameter = dico["Default"]
                 else:
-                    return dico
+                    parameter = dico
 
-        except BaseException as error:
+        except Exception as error:
             print(error)
-            return None
+        return parameter
 
     @staticmethod
     def _get_range(string):
@@ -141,7 +136,7 @@ class ConfigTest(object):
                 index_2 = index
         folder_path = string[index_1 + 1:index_2]
         if os.path.isdir(folder_path):
-            elements = map(os.path.abspath, [folder_path + "/" + s
+            elements = map(os.path.abspath, ['{}/{}'.format(folder_path, s)
                                              for s in os.listdir(folder_path)])
             return elements
         else:
@@ -151,9 +146,8 @@ class ConfigTest(object):
         """
         Get loop infos
         """
-        if 'test_info' not in self.file_config.keys():
-            return None
-        elif "loop_tests" in self.file_config['test_info']:
+        if 'test_info' in self.file_config.keys() and \
+                "loop_tests" in self.file_config['test_info']:
             loop_tests = self.file_config['test_info']['loop_tests'].split("|")
             loop_iter = self.file_config['test_info']['loop_iter']
             return loop_tests, loop_iter
@@ -222,7 +216,7 @@ class ConfigTest(object):
         """
         try:
             order = int(self.file_config[test_name]['test_order'])
-        except BaseException:
+        except Exception:
             order = 0
         return order
 
@@ -241,7 +235,7 @@ class ConfigTest(object):
             else:
                 uuts = values.split("|")
                 return uuts
-        except BaseException:
+        except Exception:
             return None
 
     def uut2(self, test_name):
@@ -258,7 +252,7 @@ class ConfigTest(object):
                 return self._get_folder(values)
             else:
                 return values.split("|")
-        except BaseException:
+        except Exception:
             return None
 
     def post_fail(self, test_name):
@@ -271,7 +265,7 @@ class ConfigTest(object):
                 return post_fail
             else:
                 return None
-        except BaseException:
+        except Exception:
             return None
 
     def reruns(self, test_name):
@@ -284,7 +278,7 @@ class ConfigTest(object):
                 return reruns
             else:
                 return None
-        except BaseException as error:
+        except Exception as error:
             print(error)
             return None
 
@@ -298,7 +292,7 @@ class ConfigTest(object):
                 return timeout
             else:
                 return None
-        except BaseException as error:
+        except Exception as error:
             print(error)
 
     def sequence(self, test_name):
@@ -309,5 +303,5 @@ class ConfigTest(object):
         try:
             sequence = self.file_config[test_name]['sequence']
             return sequence
-        except:
+        except Exception:
             return None

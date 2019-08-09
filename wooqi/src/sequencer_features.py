@@ -9,7 +9,7 @@ Sequencer features
 """
 import os
 import time
-import wooqi_pytest as pytest
+import pytest
 from wooqi.src import global_var
 
 
@@ -20,7 +20,7 @@ def get_uuts(pytest_metafunc, cpt=None):
     if cpt is None:
         test_name = pytest_metafunc.function.__name__
     else:
-        test_name = '%s_%d' % (pytest_metafunc.function.__name__, cpt)
+        test_name = '{}_{}'.format(pytest_metafunc.function.__name__, cpt)
     uut = []
     uut2 = []
     if 'uut' in pytest_metafunc.fixturenames:
@@ -40,7 +40,7 @@ def init_loop_option(pytest_metafunc, cpt=None):
         if cpt is None:
             test_name = pytest_metafunc.function.__name__
         else:
-            test_name = '%s_%d' % (pytest_metafunc.function.__name__, cpt)
+            test_name = '{}_{}'.format(pytest_metafunc.function.__name__, cpt)
             # addcall function has already been used in the first loop
             loop_iter -= 1
         test_order = global_var['config'].file_config[test_name]['test_order']
@@ -61,8 +61,8 @@ def configure_reruns_timeout_features(items):
     """
     for item in items:
         test_name = item.name.split("[")[0]
-        if global_var['config'].exist(test_name + "_0"):
-            test_name = test_name + "_" + item.name.split("[")[1][0]
+        if global_var['config'].exist("{}_0".format(test_name)):
+            test_name = "{}_{}".format(test_name, item.name.split("[")[1][0])
         if global_var['config'].exist(test_name):
             if global_var['config'].reruns(test_name) is not None:
                 item.keywords.__dict__["reruns"] = 0
@@ -109,9 +109,9 @@ def item_loop_option_analyse(item, test_name, first_arg):
         if global_var['config'].exist(test_name):
             iter_number = int(first_arg)
         # Test defined multiple time in config file and is the first iteration
-        elif global_var['config'].exist('%s_%s' % (test_name, first_arg)):
+        elif global_var['config'].exist('{}_{}'.format(test_name, first_arg)):
             iter_number = 0
-            test_name = '%s_%s' % (test_name, first_arg)
+            test_name = '{}_{}'.format(test_name, first_arg)
         # Test defined multiple time in config file but not is the first iteration
         else:
             loop_tests = global_var['config'].loop_infos()[0]
@@ -119,12 +119,13 @@ def item_loop_option_analyse(item, test_name, first_arg):
             nb_test_in_loop = 0
             first_test_in_loop = None
             # Count the number of test defined in config file
-            while global_var['config'].exist('%s_%d' % (test_name, cpt)):
-                test_order = global_var['config'].file_config['%s_%d' %
-                                                              (test_name, cpt)]['test_order']
+            while global_var['config'].exist('{}_{}'.format(test_name, cpt)):
+                test_order = global_var[
+                    'config'].file_config['{}_{}'.format(test_name, cpt)]['test_order']
                 first_loop_test_order = global_var[
                     'config'].file_config[loop_tests[0]]["test_order"]
-                last_loop_test_order = global_var['config'].file_config[loop_tests[1]]["test_order"]
+                last_loop_test_order = global_var[
+                    'config'].file_config[loop_tests[1]]["test_order"]
                 if first_loop_test_order <= test_order <= last_loop_test_order:
                     nb_test_in_loop += 1
                     if first_test_in_loop is None:
@@ -137,12 +138,12 @@ def item_loop_option_analyse(item, test_name, first_arg):
             iter_number = 1 + call_number // nb_test_in_loop
             # Found test_name in config file
             call_number = call_number % nb_test_in_loop + first_test_in_loop
-            test_name = '%s_%d' % (test_name, call_number)
+            test_name = '{}_{}'.format(test_name, call_number)
     else:
         iter_number = 0
         # If test_name exist first_arg is uut
         if not global_var['config'].exist(test_name):
-            test_name = '%s_%s' % (test_name, first_arg)
+            test_name = '{}_{}'.format(test_name, first_arg)
     return test_name, iter_number
 
 
@@ -155,7 +156,7 @@ def filter_order_tests(config, items):
     for item in items:
         basic_test_name, item_args = item_name_analyze(item.name)
         if not global_var['config'].exist(basic_test_name) and\
-           not global_var['config'].exist(basic_test_name + "_0"):
+           not global_var['config'].exist('{}_0'.format(basic_test_name)):
             # Test not used
             continue
 
@@ -163,14 +164,14 @@ def filter_order_tests(config, items):
             first_arg = item_args[0]
         else:
             first_arg = None
-        config_test_name, iter_number = item_loop_option_analyse(
-            item, basic_test_name, first_arg)
+        config_test_name, iter_number = item_loop_option_analyse(item, basic_test_name, first_arg)
 
         # If len(item_args) is 1, item_args[0] is a uut and he exists
         if "add_call" in item.keywords.__dict__["_markers"].keys():
             uut_index = 1
         else:
             uut_index = 0
+
         if len(item_args) > uut_index:
             # Verify uut
             if item_args[uut_index] not in global_var['config'].uut(config_test_name):
@@ -181,8 +182,8 @@ def filter_order_tests(config, items):
                 if item_args[uut_index + 1] not in global_var['config'].uut2(config_test_name):
                     # uut2 not used for this test
                     continue
-        test_order = int(
-            global_var['config'].file_config[config_test_name]['test_order'])
+
+        test_order = int(global_var['config'].file_config[config_test_name]['test_order'])
         if iter_number != 0:
             # Create second list only with test in loop option after the first iteration
             if not list_loop_temp:
@@ -221,12 +222,12 @@ def rerun_sequence_since_the_fail(config, items):
 
     for file_name in os.listdir(os.path.abspath('.cache/v/cache/')):
         if file_name != 'lastfailed':
-            file_path = os.path.abspath('.cache/v/cache/%s' % file_name)
+            file_path = os.path.abspath('.cache/v/cache/{}'.format(file_name))
             if time.time() - os.path.getmtime(file_path) > 604800:  # 604800 seconds -> 7 days
                 os.remove(file_path)
 
     serial_number = config.getoption('--sn')
-    cache_path = os.path.abspath('.cache/v/cache/%s' % serial_number)
+    cache_path = os.path.abspath('.cache/v/cache/{}'.format(serial_number))
     if os.path.isfile(cache_path):
         # Found the name of test failed
         cache_file = open(cache_path, 'r')
@@ -240,10 +241,10 @@ def rerun_sequence_since_the_fail(config, items):
         if '[' in item_fail_name:
             test_failed, option = item_fail_name.split('[', 1)
             option = option.split('-')[0].split(']')[0]
-            if global_var['config'].exist('%s_0' % test_failed):
+            if global_var['config'].exist('{}_0'.format(test_failed)):
                 # First option is not uut
-                item_fail_name = '%s[%s' % (test_failed, option)
-                test_failed = '%s_%s' % (test_failed, option)
+                item_fail_name = '{}[{}'.format(test_failed, option)
+                test_failed = '{}_{}'.format(test_failed, option)
             else:
                 item_fail_name = test_failed
 
@@ -260,14 +261,14 @@ def rerun_sequence_since_the_fail(config, items):
                      test_order_loop_stop):
                     test_failed = global_var['config'].loop_infos()[0][0]
                     test_failed, option = test_failed.rsplit('_', 1)
-                    if global_var['config'].exist('%s_%s' % (test_failed, option)) and \
-                            global_var['config'].exist('%s_0' % test_failed):
+                    if global_var['config'].exist('{}_{}'.format(test_failed, option)) and \
+                            global_var['config'].exist('{}_0'.format(test_failed)):
                         # First option is not uut
                         option = option.split(']', 1)[0].split('-')[0]
-                        item_fail_name = '%s[%s' % (test_failed, option)
-                        test_failed = '%s_%s' % (test_failed, option)
+                        item_fail_name = '{}[{}'.format(test_failed, option)
+                        test_failed = '{}_{}'.format(test_failed, option)
                     else:
-                        item_fail_name = '%s_%s' % (test_failed, option)
+                        item_fail_name = '{}_{}'.format(test_failed, option)
         else:
             test_failed = item_fail_name
 
@@ -299,8 +300,8 @@ def postfail_feature_management(test, item, skip, loop):
     Manage the postfail feature according to the config test file
     """
     test_name, item_args = item_name_analyze(test)
-    if global_var['config'].exist(test_name + "_0"):
-        test_name = '%s_%s' % (test_name, item_args[0])
+    if global_var['config'].exist('{}_0'.format(test_name)):
+        test_name = '{}_{}'.format(test_name, item_args[0])
 
     post_fail = global_var['config'].post_fail(test_name)
     if post_fail is not None:
@@ -311,8 +312,8 @@ def postfail_feature_management(test, item, skip, loop):
             skip_reason = ""
             for test in item.session.items:
                 item_name = test.name.split("[")[0]
-                if global_var['config'].exist(item_name + "_0"):
-                    item_name = item_name + "_" + test.name.split("[")[1][0]
+                if global_var['config'].exist('{}_0'.format(item_name)):
+                    item_name = '{}_{}'.format(item_name, test.name.split("[")[1][0])
                 if post_fail in item_name:
                     break
                 if test_name != item_name and skip is True:
@@ -322,8 +323,8 @@ def postfail_feature_management(test, item, skip, loop):
         skip_reason = ""
         for each in item.session.items:
             item_name, item_args = item_name_analyze(each.name)
-            if global_var['config'].exist(item_name + "_0"):
-                item_name = '%s_%s' % (item_name, item_args[0])
+            if global_var['config'].exist('{}_0'.format(item_name)):
+                item_name = '{}_{}'.format(item_name, item_args[0])
 
             if global_var['config'].order(
                     item_name) != global_var['config'].order(test_name) and skip is True:

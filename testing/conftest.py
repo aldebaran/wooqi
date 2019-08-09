@@ -7,7 +7,7 @@
 """
 Pytest sequencer tests conftest
 """
-import wooqi_pytest as pytest
+import pytest
 
 
 @pytest.fixture(scope="session")
@@ -25,10 +25,10 @@ def executed_tests(request, test_config_parser, logger):
         required_list = [int(x) for x in test_config_parser.get(
             "Result", mode_tests).split(",")]
         test_name = test_config_parser.get("Result", "test_name")
-        fail_message = test_name + " failed"
+        fail_message = '{} failed'.format(test_name)
         logger.info(test_name)
-        logger.info("Executed tests = " + str(executed_tests))
-        logger.info("Required test = " + str(required_list))
+        logger.info("Executed tests = {}".format(str(executed_tests)))
+        logger.info("Required test = {}".format(str(required_list)))
         assert executed_tests == required_list, fail_message
         logger.info("TEST PASSED")
 

@@ -19,10 +19,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - None
 
 ### Removed
-- None
+- Remove fork pytest
 
 ### Fixed
--  None
+- Fix exit status in main to get msb value
 
 ### Security
 - None

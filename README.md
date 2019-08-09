@@ -1,12 +1,11 @@
 # Wooqi test sequencer
-
 [![PyPI version fury.io](https://img.shields.io/pypi/v/wooqi.png)](https://pypi.python.org/pypi/wooqi/)
 [![PyPI license](https://img.shields.io/pypi/l/wooqi.svg)](https://pypi.python.org/pypi/wooqi/)
 [![Build Status](https://travis-ci.org/aldebaran/wooqi.svg?branch=master)](https://travis-ci.org/aldebaran/wooqi)
 
 ## Introduction
 
-**Wooqi** is a fork of the [Python](https://www.python.org) module named
+**Wooqi** is a plugin for the [Python](https://www.python.org) module named
 [pytest](http://pytest.org). It allows to code tests in a very special way. It is a usefull tool to
 manage a big database of tests, as it simplifies their creation, their maintenance, and their
 execution.
@@ -18,7 +17,7 @@ testing methodology which can be described by the following key points:
 * There is a *test sequences* database, where each sequence is
 composed of one or several test steps picked from the *test steps* database.
 * There are some *common tools* (custom python classes or functions)
-and *fixtures* which all can be used by any test step.
+and *fixtures* (introduced by pytest) which all can be used by any test step.
 * Users can execute a single test sequence with a single command line.
 * All reports and logs of test sequences are saved in a common *reports* database.
 
@@ -46,6 +45,17 @@ Or you can clone the depository, and manually build and install the package:
     pip install dist/<package_name>
 
 Where `<package_name>` is the name of the wooqi package with its version
+
+### Dependencies:
+
+* **pytest**
+	`pip install pytest --user --upgrade`
+    * **pytest-rerunfailures**
+	`pip install pytest-rerunfailures --user --upgrade`
+    * **pytest-timeout**
+	`pip install pytest-timeout --user --upgrade`
+    * **pytest-spec**
+	`pip install pytest-spec --user --upgrade`
 
 ## Your wooqi project
 
@@ -253,26 +263,15 @@ available parameters and their use are explained in this template.
 
 The concept of fixtures is a nice feature provided by Py.test. To get more information about it,
 please read the official [documentation](https://docs.pytest.org/en/latest/fixture.html).
-The only difference with Wooqi, it's just that you have to import the custom pytest module included in Wooqi:
-
-```python
-import wooqi_pytest
-
-@wooqi_pytest.fixture()
-def my_fixture():
-    """Example of wooqi fixture."""
-    pass
-```
-
 
 You can add your own fixtures to your project in any file you want. Then, each one of your steps can
 call a fixture as one of its arguments. These fixtures will be called before and/or after the
 execution of the step in the sequence.
 
-#### Write your own wooqi hooks
+#### Write your own pytest hooks
 
-Wooqi offers all the pytest hooks that allow to insert custom code in the middle of the
-execution of wooqi. To get more information about these, please read the official
+The Py.test tool offers several hooks that allow to insert custom code in the middle of the
+execution of Py.test. To get more information about these, please read the official
 [documentation](https://docs.pytest.org/en/latest/writing_plugins.html#writinghooks).
 
 You can add your own custom hooks in your wooqi project.
