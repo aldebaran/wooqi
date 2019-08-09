@@ -11,7 +11,7 @@ import os
 import sys
 import logging
 import logging.handlers
-from configparser import RawConfigParser, NoOptionError, NoSectionError
+from ConfigParser import RawConfigParser, NoOptionError, NoSectionError
 from wooqi.src import logger_gv
 
 
@@ -83,8 +83,10 @@ def init_logger(filename, directory, console_logger=True, maxSize=10000000):
             else:
                 level = logging.INFO
             # create rotating file handler, add formatter to ch and add ch to logger
-            handler = logging.handlers.RotatingFileHandler(os.path.join(directory, filename + '.log'),
-                                                           maxBytes=maxSize, backupCount=5)
+            handler = logging.handlers.RotatingFileHandler(
+                os.path.join(directory, '{}.log'.format(filename)),
+                maxBytes=maxSize,
+                backupCount=5)
             handler.setFormatter(logging.Formatter(file_formatter_string))
             filter = SingleLevelFilter(level)
             handler.addFilter(filter)
