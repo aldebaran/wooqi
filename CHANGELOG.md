@@ -19,16 +19,25 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - None
 
 ### Removed
-- Remove fork pytest
+- None
 
 ### Fixed
-- Fix exit status in main to get msb value
+- None
 
 ### Security
 - None
 
 ### Known Issues
 - None
+
+***
+## [3.0.0] - 2019-08-09
+### Removed
+- Remove fork pytest
+
+### Fixed
+- Fix exit status in main to get msb value
+- Fix fail management in loop
 
 ***
 ## [2.0.1] - 2018-11-15

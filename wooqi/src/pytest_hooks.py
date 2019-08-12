@@ -72,8 +72,7 @@ def pytest_runtest_makereport(item, call):
                 loop = False
 
             # Manage the postfail feature according to the config test file
-            sequencer_features.postfail_feature_management(
-                item.name, item, skip, loop)
+            sequencer_features.postfail_feature_management(item, skip, loop)
 
         # Manage skip marker, when test fail on the teardown
         elif call.when == 'teardown' and rep.outcome == 'failed':
@@ -94,8 +93,7 @@ def pytest_runtest_makereport(item, call):
                 loop = False
 
             # Manage the postfail feature according to the config test file
-            sequencer_features.postfail_feature_management(
-                item.name, item, skip, loop)
+            sequencer_features.postfail_feature_management(item, skip, loop)
 
 
 def pytest_report_header(config):

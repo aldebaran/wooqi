@@ -83,4 +83,14 @@ else
     result=1
 fi
 
+va=$(wooqi --seq-config testing/loop_feature/tests/loop_fail_second_iteration.ini --sn wooqi_tests -s)
+
+echo -e $va | grep --quiet "TEST PASSED"
+if [ $? = 0 ];then
+    echo -e "- Looping feature | Fail second iteration test --> ${GREEN}PASSED${NC}"
+else
+    echo -e "- Looping feature | Fail second iteration test --> ${RED}FAILED${NC}"
+    result=1
+fi
+
 exit $result
