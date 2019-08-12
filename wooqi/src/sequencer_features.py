@@ -295,44 +295,61 @@ def rerun_sequence_since_the_fail(config, items):
         items[:] = items_temp
 
 
-def postfail_feature_management(test, item, skip, loop):
+def postfail_feature_management(item, skip, loop):
     """
     Manage the postfail feature according to the config test file
     """
-    test_name, item_args = item_name_analyze(test)
-    if global_var['config'].exist('{}_0'.format(test_name)):
-        test_name = '{}_{}'.format(test_name, item_args[0])
+    if not skip:
+        return
 
-    post_fail = global_var['config'].post_fail(test_name)
+    # Name defined in config file
+    item_name, item_args = item_name_analyze(item.name)
+    if 'loop' in item.keywords.__dict__["_markers"].keys():
+        item_name = item_loop_option_analyse(item, item_name, item_args[0])[0]
+    elif global_var['config'].exist(item_name + "_0"):
+        item_name = '%s_%s' % (item_name, item_args[0])
+
+    post_fail = global_var['config'].post_fail(item_name)
     if post_fail is not None:
-        if global_var['config'].post_fail(test_name) == "next_step":
+        if global_var['config'].post_fail(item_name) == "next_step":
             pass
 
         elif "test" in post_fail or "action" in post_fail:
             skip_reason = ""
-            for test in item.session.items:
-                item_name = test.name.split("[")[0]
-                if global_var['config'].exist('{}_0'.format(item_name)):
-                    item_name = '{}_{}'.format(item_name, test.name.split("[")[1][0])
-                if post_fail in item_name:
+            for session_item in item.session.items:
+                if "[" not in session_item.name:
+                    session_item_name = session_item.name
+                else:
+                    session_item_name, session_item_args = item_name_analyze(session_item.name)
+                    if global_var['config'].exist(session_item_name + "_0"):
+                        session_item_name = '%s_%s' % (session_item_name, session_item_args[0])
+
+                if post_fail in session_item_name:
                     break
-                if test_name != item_name and skip is True:
-                    test.add_marker(pytest.mark.skipif(
-                        skip, reason=skip_reason))
+
+                if 'loop' in item.keywords.__dict__["_markers"].keys():
+                    if item_name.rsplit('_', 1)[0] != session_item_name.rsplit('_', 1)[0]:
+                        session_item.add_marker(pytest.mark.skipif(skip, reason=skip_reason))
+                # if same base name, verify if it is the same iteration to authorize another uut
+                    elif item_args[0] != session_item_args[0]:
+                        session_item.add_marker(pytest.mark.skipif(skip, reason=skip_reason))
+                elif item_name != session_item_name:
+                    session_item.add_marker(pytest.mark.skipif(skip, reason=skip_reason))
     else:
         skip_reason = ""
-        for each in item.session.items:
-            item_name, item_args = item_name_analyze(each.name)
-            if global_var['config'].exist('{}_0'.format(item_name)):
-                item_name = '{}_{}'.format(item_name, item_args[0])
+        for session_item in item.session.items:
+            if "[" not in session_item.name:
+                session_item_name = session_item.name
+            else:
+                session_item_name, session_item_args = item_name_analyze(session_item.name)
+                if global_var['config'].exist(session_item_name + "_0"):
+                    session_item_name = '%s_%s' % (session_item_name, session_item_args[0])
 
-            if global_var['config'].order(
-                    item_name) != global_var['config'].order(test_name) and skip is True:
-                if item_name != test_name:
-                    each.add_marker(pytest.mark.skipif(
-                        skip, reason=skip_reason))
-            if item_name == test_name:
-                if len(each.name.split("[")) > 1 and len(test.split("[")) > 1:
-                    if each.name.split("[")[1] != test.split("[")[1] and loop:
-                        each.add_marker(pytest.mark.skipif(
-                            skip, reason=skip_reason))
+            if 'loop' in item.keywords.__dict__["_markers"].keys():
+                if item_name.rsplit('_', 1)[0] != session_item_name.rsplit('_', 1)[0]:
+                    session_item.add_marker(pytest.mark.skipif(skip, reason=skip_reason))
+                # if same base name, verify if it is the same iteration to authorize another uut
+                elif item_args[0] != session_item_args[0]:
+                    session_item.add_marker(pytest.mark.skipif(skip, reason=skip_reason))
+            elif item_name != session_item_name:
+                session_item.add_marker(pytest.mark.skipif(skip, reason=skip_reason))
