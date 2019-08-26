@@ -1,0 +1,36 @@
+import groovy.transform.Field
+@Library("lib-groovy-jenkins@master") _
+@Field def node_label="prodtest-1604"
+@Field def failed_job = false
+@Field def unstable_job = false
+
+timestamps{
+    ansiColor('xterm'){
+        node(node_label){
+
+            if(env.gitlabBranch != null){
+                println("Detecting that the job was triggered by a GitLab merge request. Merge from ${env.gitlabBranch} into ${env.gitlabTargetBranch}")
+                env.branch_name = env.gitlabBranch
+            }
+
+            gitCheckout(this, env.branch_name, env.repository_url, "git-ssh")
+
+            gitlabCommitStatus(connection: gitLabConnection('gitlab_connection'), name: env.JOB_NAME) {
+
+                installingTestsuite(this)
+
+                setupPythonEnvironment(this, ['pylint', 'pycodestyle'])
+
+                lint_results = lintPythonAndRecordResult(this)
+
+            }
+
+            if(lint_results[0] == true){
+                println('PEP8 have failed.')
+                updateGitlabCommitStatus name: env.JOB_NAME, state: 'failed', connection: gitLabConnection('gitlab_connection')
+            }
+
+            claimBuild(this, lint_results[0], lint_results[1])
+        }
+    }
+}
