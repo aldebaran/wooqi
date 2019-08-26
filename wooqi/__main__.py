@@ -112,7 +112,7 @@ def main(args=None):
             val = val + 255
         exit(val >> 8)
     else:
-        print("/!\ Error: unknown Wooqi command ! Please see usage below.")
+        print("Error: unknown Wooqi command ! Please see usage below.")
         print_usage()
         exit(-1)
 
