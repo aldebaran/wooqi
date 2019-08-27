@@ -157,18 +157,35 @@ Here is a list of attributes that could be written in step/action sections:
 
 ##### Call the same step several times in a single sequence
 
-If you need to call the same test step several times, there is a special syntax. You must add "\_X"
-at the end of the test name, increasing the number "X from "0" as follow :
+Wooqi add automatly "\-X" at the end of test name with multiple call to differently all sections.
 
 ```ini
-[test_foo_0] ; Start with 0
+[test_a]          ; Wooqi don't rename test_a because he is unique
+
+[test_b]          ; Wooqi automatly rename by test_b-0
 uut=dummy1
 
-[test_foo_1] ; Continue with 1
+[test_b]          ; Wooqi automatly rename by test_b-1
 uut=dummy2
 
-[test_foo_X] ; and so on...
+[test_b]          ; and so on...
 uut=dummy3
+```
+
+If you use special feature who need a unique step name (postfail, loop, and so on...), you must add "\-X"
+at the end of the test name, increasing the number "X" from "0" as follow :
+
+```ini
+[action_foo-0]
+uut=dummy1
+post_fail=action_foo-1 ; action_foo name must be a unique. The system know exactly the step to continue if the step fail
+
+[test_foo]             ; Wooqi automatly rename by test_foo-0
+
+[action_foo-1]
+uut=dummy2
+
+[test_foo]             ; Wooqi automatly rename by test_foo-1
 ```
 
 ##### Make loops in the test sequence

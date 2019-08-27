@@ -10,38 +10,144 @@ TestConfig Class
 import os
 import re
 from sys import exit
-import collections
+from collections import OrderedDict
 from ConfigParser import SafeConfigParser
+
+
+class MultiDict(OrderedDict):
+    """
+    To differentiate section with the same name in .ini file
+    Add _X of sections name, with X depently the number of call
+    """
+
+    _keys_name_and_params = {}    # class variable
+
+    def __setitem__(self, key, val):
+        if isinstance(val, dict) and (key.startswith('test_') or key.startswith('action_')):
+            if key.count('-') > 1:
+                msg = '{} is not compatible name: too much -'.format(key)
+                print(msg)
+                raise Exception(msg)
+
+            try:
+                test_name, param = key.split('-')
+                try:
+                    param = int(param)
+                except ValueError:
+                    msg = '{} is not compatible name: Value after - must be integer'.format(key)
+                    print(msg)
+                    raise Exception(msg)
+            # No param found
+            except ValueError:
+                test_name = key
+                if test_name in self._keys_name_and_params.keys():
+                    param = self._keys_name_and_params[key][-1] + 1
+                else:
+                    param = 0
+
+            if test_name not in self._keys_name_and_params:
+                self._keys_name_and_params[test_name] = [param]
+            elif param not in self._keys_name_and_params[test_name]:
+                self._keys_name_and_params[test_name].append(param)
+            else:
+                msg = '{} has multiple call unclear, please verify your configuration file'.format(
+                        test_name)
+                print(msg)
+                raise Exception(msg)
+
+            key = '{} {}'.format(test_name, param)
+        OrderedDict.__setitem__(self, key, val)
 
 
 class ConfigTest(object):
     """ Config Class """
 
     def __init__(self, config_path):
+        # Create dictionary with all section are unique names
         config_file = config_path
         try:
-            parser = SafeConfigParser()
+            parser = SafeConfigParser(dict_type=MultiDict)
             parser.optionxform = str
             file_parse = parser.read(config_file)
-        except Exception as error:
-            msg = 'Problem while parsing configuration file {} ({})'.format(config_file, error)
+        except KeyError as error:
+            msg = 'Problem while parsing configuration file {}: {}'.format(config_file, error)
             print(msg)
-            raise
+            raise Exception(msg)
         if len(file_parse):
             self.config_file_exists = True
         else:
             self.config_file_exists = False
 
-        file_config = collections.OrderedDict()
+        # Create ordered dictionary with final tests names
+        test_number = 1
+        file_config = OrderedDict()
+        list_name = []
         for section in parser.sections():
-            dict_tmp = {}
-            for option in parser.options(section):
-                dict_tmp[option] = parser.get(section, option)
-            file_config[section] = dict_tmp
-            file_config[section]["test_order"] = list(file_config.keys()).index(section) + 1
+            items = parser.items(section)
+            if section.startswith('test_') or section.startswith('action_'):
+                name, param = section.rsplit(' ', 1)
+                if param == '0' and str(parser.sections()).count('{} '.format(name)) == 1:
+                    section = name
+                else:
+                    section = '{}-{}'.format(name, param)
+
+                list_name.append(name)
+                file_config[section] = dict(items)
+                file_config[section]['test_order'] = test_number
+                test_number += 1
+            else:
+                file_config[section] = dict(items)
+
+        # Check post_fail option
+        file_config_temp = list(file_config)
+        for test_name in file_config:
+            file_config_temp.remove(test_name)
+            if 'post_fail' in file_config[test_name]:
+                post_fail = file_config[test_name]['post_fail']
+                if post_fail.lower() != 'next_step' and post_fail not in file_config_temp:
+                    msg = 'Problem with post_fail option, {} not found'.format(post_fail)
+                    print(msg)
+                    raise Exception(msg)
+
+        # Check loop option
+        try:
+            loop_tests = file_config['test_info']['loop_tests']
+        except KeyError:
+            loop_tests = None
+        if loop_tests:
+            loop_tests = loop_tests.split('|')
+            if len(loop_tests) != 2:
+                msg = 'Problem with loop option, please verify format: ' \
+                    'loop_tests=test_NAME1|test_NAME2'
+                print(msg)
+                raise Exception(msg)
+            msg = ''
+            if loop_tests[0] not in file_config.keys():
+                msg += '{} '.format(loop_tests[0])
+            if loop_tests[1] not in file_config.keys():
+                msg += '{} '.format(loop_tests[1])
+            if msg:
+                msg += 'tests not found for loop option'
+                print(msg)
+                raise Exception(msg)
+            try:
+                loop_iter = int(file_config['test_info']['loop_iter'])
+                file_config['test_info']['loop_iter'] = loop_iter
+            except Exception:
+                msg = 'Loop option is enable but loop_iter parameter is not correctly create'
+                print(msg)
+                raise Exception(msg)
+
+            # Add the iteration number
+            loop_start_order = file_config[loop_tests[0]]['test_order']
+            loop_stop_order = file_config[loop_tests[1]]['test_order']
+            for session in file_config:
+                if 'test_order' in file_config[session]:
+                    test_order = file_config[session]['test_order']
+                    if loop_start_order <= test_order <= loop_stop_order:
+                        file_config[session]['wooqi_loop_iter'] = loop_iter
 
         self.file_config = file_config
-        self.current_test = None
 
     @staticmethod
     def _get_paramater(param, uut, uut2, evaluate=True):
@@ -280,7 +386,6 @@ class ConfigTest(object):
                 return None
         except Exception as error:
             print(error)
-            return None
 
     def timeout(self, test_name):
         """

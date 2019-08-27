@@ -31,6 +31,28 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - None
 
 ***
+## [4.0.0] - 2019-09-18
+### Enhanced
+- None
+
+### Added
+- If multiple call of the same test if found, wooqi automatly add '-X' if missing of configuration file
+- Control conformity of configuration file: The test of post_fail and test_required are found
+- Control conformity of configuration file: All actions/tests of configuration file are found
+
+### Changed
+- To call multiple time the same test, we must add '-X' instead of '_X'
+
+### Deprecated
+- The old system confused some test names. Add '_X' to call multiple time the same test is deprecated, instead add '-X'
+
+### Fixed
+- Testing functions are missing
+
+### Known Issues
+- None
+
+***
 ## [3.0.0] - 2019-08-09
 ### Removed
 - Remove fork pytest
