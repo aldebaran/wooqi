@@ -1,13 +1,12 @@
 import groovy.transform.Field
 @Library("lib-groovy-jenkins@master") _
 @Field def node_label="prodtest-1604"
-@Field def failed_job = false
-@Field def unstable_job = false
 
 timestamps{
     ansiColor('xterm'){
         node(node_label){
-
+            env.failed_job = false
+            env.unstable_job = false
             if(env.gitlabBranch != null){
                 println("Detecting that the job was triggered by a GitLab merge request. Merge from ${env.gitlabBranch} into ${env.gitlabTargetBranch}")
                 env.branch_name = env.gitlabBranch
