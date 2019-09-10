@@ -1,12 +1,11 @@
 import groovy.transform.Field
 @Library("lib-groovy-jenkins@master") _
 @Field def node_label="prodtest-1604"
-
+@Field def failed_job=false
+@Field def unstable_job=false
 timestamps{
     ansiColor('xterm'){
         node(node_label){
-            env.failed_job = false
-            env.unstable_job = false
             if(env.gitlabBranch != null){
                 println("Detecting that the job was triggered by a GitLab merge request. Merge from ${env.gitlabBranch} into ${env.gitlabTargetBranch}")
                 env.branch_name = env.gitlabBranch
@@ -20,12 +19,15 @@ timestamps{
 
                     setupPythonEnvironment(this, ['pylint', 'pycodestyle'])
 
-                    lintPythonAndRecordResult(this)
+                    (unstable_job, failed_job) = lintPythonAndRecordResult(this, unstable_job, failed_job)
 
+                    if (failed_job == true){
+                        error "PEP8 Errors have been detected in the job"
+                    }
                 }
             }
             finally {
-                claimBuild(this, env.failed_job, env.unstable_job)
+                claimBuild(this, failed_job, unstable_job)
             }
 
         }
