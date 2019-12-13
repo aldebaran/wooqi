@@ -259,4 +259,52 @@ else
     result=1
 fi
 
+va=$(wooqi --seq-config testing/cache_feature/tests/cache_mark_parametrize_test.ini --sn wooqi_tests -s)
+echo -e $va | grep --quiet "TEST PASSED"
+if [ $? = 0 ];then
+    va=$(wooqi --seq-config testing/cache_feature/tests/cache_mark_parametrize_test.ini --sn wooqi_tests -s --ff)
+    echo -e $va | grep --quiet "TEST PASSED"
+    if [ $? = 0 ];then
+        echo -e "- Cache feature | Restart mark parametrize tests --> ${GREEN}PASSED${NC}"
+    else
+        echo -e "- Cache feature | Restart mark parametrize tests --> ${RED}FAILED${NC}"
+        result=1
+    fi
+else
+    echo -e "- Cache feature | Restart mark parametrize tests / INITIALIZATION --> ${RED}FAILED${NC}"
+    result=1
+fi
+
+va=$(wooqi --seq-config testing/cache_feature/tests/cache_mark_parametrize_with_uut_test.ini --sn wooqi_tests -s)
+echo -e $va | grep --quiet "TEST PASSED"
+if [ $? = 0 ];then
+    va=$(wooqi --seq-config testing/cache_feature/tests/cache_mark_parametrize_with_uut_test.ini --sn wooqi_tests -s --ff)
+    echo -e $va | grep --quiet "TEST PASSED"
+    if [ $? = 0 ];then
+        echo -e "- Cache feature | Restart mark parametrize with uut tests --> ${GREEN}PASSED${NC}"
+    else
+        echo -e "- Cache feature | Restart mark parametrize with uut tests --> ${RED}FAILED${NC}"
+        result=1
+    fi
+else
+    echo -e "- Cache feature | Restart mark parametrize with uut tests / INITIALIZATION --> ${RED}FAILED${NC}"
+    result=1
+fi
+
+va=$(wooqi --seq-config testing/cache_feature/tests/cache_mark_parametrize_loop_test.ini --sn wooqi_tests -s)
+echo -e $va | grep --quiet "TEST PASSED"
+if [ $? = 0 ];then
+    va=$(wooqi --seq-config testing/cache_feature/tests/cache_mark_parametrize_loop_test.ini --sn wooqi_tests -s --ff)
+    echo -e $va | grep --quiet "TEST PASSED"
+    if [ $? = 0 ];then
+        echo -e "- Cache feature | Restart mark parametrize loop tests --> ${GREEN}PASSED${NC}"
+    else
+        echo -e "- Cache feature | Restart mark parametrize loop tests --> ${RED}FAILED${NC}"
+        result=1
+    fi
+else
+    echo -e "- Cache feature | Restart mark parametrize loop tests / INITIALIZATION --> ${RED}FAILED${NC}"
+    result=1
+fi
+
 exit $result

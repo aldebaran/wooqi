@@ -8,6 +8,8 @@
 Tests
 """
 
+import pytest
+
 
 def test_1(executed_tests, test_result):
     """
@@ -109,3 +111,30 @@ def test_teardown_fixture(fixture_teardown_fail):
     test teardown fixture fail
     """
     pass
+
+
+@pytest.mark.parametrize("params", ["1", "2", "3"])
+def test_parametrize_loop_fail_second_call(params, executed_tests):
+    """
+    test parametrize fail on second call
+    """
+    executed_tests.append(0)
+    assert executed_tests.count(0) < 4
+
+
+@pytest.mark.parametrize("params", ["1", "2", "3"])
+def test_parametrize_fail_second_call(params, executed_tests):
+    """
+    test parametrize fail on second call
+    """
+    executed_tests.append(0)
+    assert executed_tests.count(0) == 1
+
+
+@pytest.mark.parametrize("params", ["1", "2", "3"])
+def test_parametrize_fail_second_call_with_uut(uut, params, executed_tests):
+    """
+    test parametrize with uut fail on second call
+    """
+    executed_tests.append(0)
+    assert executed_tests.count(0) == 1
