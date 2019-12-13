@@ -31,10 +31,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - None
 
 ***
-## [4.0.0] - 2019-09-18
-### Enhanced
-- None
-
+## [4.0.0] - 2019-12-13
 ### Added
 - If multiple call of the same test if found, wooqi automatly add '-X' if missing of configuration file
 - Control conformity of configuration file: The test of post_fail and test_required are found
@@ -48,9 +45,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Fixed
 - Testing functions are missing
-
-### Known Issues
-- None
 
 ***
 ## [3.0.0] - 2019-08-09
