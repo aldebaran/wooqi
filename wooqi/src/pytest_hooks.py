@@ -24,9 +24,6 @@ def pytest_collection_modifyitems(config, items):
         # Filter and re-order tests
         sequencer_features.filter_order_tests(config, items)
 
-        # Configure the tests with the reruns and timeout features
-        sequencer_features.configure_reruns_timeout_features(items)
-
 
 @pytest.hookimpl(tryfirst=True, hookwrapper=True)
 def pytest_runtest_makereport(item, call):
@@ -37,9 +34,12 @@ def pytest_runtest_makereport(item, call):
     rep = outcome.get_result()
     if global_var['config'] is not None:
         result = 'Result : {}'.format(rep.outcome)
-        test_name, item_args = sequencer_features.item_name_analyze(item.name)
-        if global_var['config'].exist('{}_0'.format(test_name)):
-            test_name = '{}_{}'.format(test_name, item_args[0])
+
+        # test_name according in file_config
+        test_name = item.name.split('[')[0]
+        if test_name not in global_var['config'].file_config:
+            call_number = item.name.split('[')[1].split('-')[0].replace(']', '')
+            test_name = '{}-{}'.format(test_name, call_number)
 
         # Add logs
         if call.when == 'setup':
@@ -66,13 +66,8 @@ def pytest_runtest_makereport(item, call):
             else:
                 skip = True
 
-            if "loop" in item.keywords.__dict__["_markers"].keys():
-                loop = True
-            else:
-                loop = False
-
             # Manage the postfail feature according to the config test file
-            sequencer_features.postfail_feature_management(item, skip, loop)
+            sequencer_features.postfail_feature_management(item, skip)
 
         # Manage skip marker, when test fail on the teardown
         elif call.when == 'teardown' and rep.outcome == 'failed':
@@ -87,13 +82,8 @@ def pytest_runtest_makereport(item, call):
             else:
                 skip = True
 
-            if "loop" in item.keywords.__dict__["_markers"].keys():
-                loop = True
-            else:
-                loop = False
-
             # Manage the postfail feature according to the config test file
-            sequencer_features.postfail_feature_management(item, skip, loop)
+            sequencer_features.postfail_feature_management(item, skip)
 
 
 def pytest_report_header(config):
@@ -121,41 +111,59 @@ def pytest_generate_tests(metafunc):
     """
     Generate test options
     """
+    test_name = metafunc.function.__name__
     if global_var['config'] is not None:
-        # Test called one time
-        if global_var['config'].exist(metafunc.function.__name__):
-            # Manage loop option
-            sequencer_features.init_loop_option(metafunc)
-            # Get uut and uut2 when test is called
-            uut_list, uut2_list = sequencer_features.get_uuts(metafunc)
+        file_config = global_var['config'].file_config
+        if test_name.startswith('test_') or test_name.startswith('action_'):
 
-        # Test called one time or more
-        elif global_var['config'].exist('{}_0'.format(metafunc.function.__name__)):
-            metafunc.function.__dict__["add_call"] = True
+            test_used = False
             uut_list = []
             uut2_list = []
-            cpt = 0
-            while global_var['config'].exist('{}_{}'.format(metafunc.function.__name__, cpt)):
-                # Add call for each test performed
-                metafunc.addcall()
-                # Manage loop option
-                sequencer_features.init_loop_option(metafunc, cpt)
-                # Get uut and uut2 when test is called
-                uuts = sequencer_features.get_uuts(metafunc, cpt)
-                uut_list += uuts[0]
-                uut2_list += uuts[1]
-                cpt += 1
+            sessions = []
+            test_id = None
+            for session in file_config:
+                if session.split('-')[0] == test_name:
+                    test_used = True
+                    sessions.append(session)
+                    # Manage paramaters
+                    uuts, uuts2 = sequencer_features.get_uuts(session)
+                    uut_list += uuts
+                    uut2_list += uuts2
 
-        # Test not used
-        else:
-            return
+                    if '-' in session:
+                        # Overwrite the test name according at configuration file
+                        test_id = session.split('-')[1]
+                        # The first addcall only rename the test name
+                        metafunc.addcall(id=test_id)
 
-        # Add paramaters uut and uut2
-        if uut_list:
-            metafunc.function.__dict__["uut"] = True
-            metafunc.parametrize("uut", list(set(uut_list)))
-        if uut2_list:
-            metafunc.parametrize("uut2", list(set(uut2_list)))
+            # Test not used
+            if not test_used:
+                return
+
+            # Manage loop option
+            if global_var['config'].loop_infos():
+                for session in sessions:
+                    loop_start, loop_stop = global_var['config'].loop_infos()[0]
+                    loop_start_order = file_config[loop_start]['test_order']
+                    loop_stop_order = file_config[loop_stop]['test_order']
+                    test_order = file_config[session]['test_order']
+                    if loop_start_order <= test_order <= loop_stop_order:
+                        loop_iter = int(global_var['config'].loop_infos()[1])
+                        if test_id is None:
+                            for i in range(loop_iter):
+                                metafunc.addcall(id='{}'.format(i))
+                        else:
+                            test_id = session.split('-')[1]
+                            for i in range(loop_iter):
+                                metafunc.addcall(id='{}-{}'.format(test_id, i))
+                        file_config[session]['wooqi_loop_iter'] = loop_iter
+
+            # Add paramaters uut and uut2
+            if uut_list:
+                metafunc.function.__dict__["uut"] = True
+                metafunc.parametrize("uut", list(set(uut_list)))
+            if uut2_list:
+                metafunc.parametrize("uut2", list(set(uut2_list)))
 
 
 def pytest_sessionfinish(exitstatus, session):

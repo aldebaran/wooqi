@@ -57,6 +57,14 @@ def test_2_uut(executed_tests, test_result, uut):
     assert test_result
 
 
+def test_3_uut(executed_tests, test_result, uut):
+    """
+    test 3 with uut
+    """
+    executed_tests.append(3)
+    assert test_result
+
+
 def test_1_uut2(executed_tests, test_result, uut, uut2):
     """
     test 1 with two uut
@@ -70,6 +78,14 @@ def test_2_uut2(executed_tests, test_result, uut, uut2):
     test 2 with two uut
     """
     executed_tests.append(2)
+    assert test_result
+
+
+def test_3_uut2(executed_tests, test_result, uut, uut2):
+    """
+    test 3 with two uut
+    """
+    executed_tests.append(3)
     assert test_result
 
 

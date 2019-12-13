@@ -70,18 +70,11 @@ def test_name(request, logger):
     """
     Return current test name
     """
-    test = str(request.node).split("'")[1].split("[")
-    test_name = test[0]
-    if len(test) > 1:
-        if global_var['config'].exist('{}_{}'.format(
-                test[0], test[1].replace("]", "").split('-')[0])):
-            test_name = '{}_{}'.format(test_name, test[1].replace("]", "").split('-')[0])
-        elif not global_var['config'].exist(test_name):
-            cpt = 0
-            while global_var['config'].exist('{}_{}'.format(test[0], cpt)):
-                cpt = cpt + 1
-            num = int(test[1].replace("]", "").split('-')[0]) % cpt
-            test_name = '{}_{}'.format(test[0], num)
+    # test_name according in file_config
+    test_name = str(request.node).split("'")[1].split('[')[0]
+    if test_name not in global_var['config'].file_config:
+        call_number = str(request.node).split("'")[1].split('[')[1].split('-')[0].replace(']', '')
+        test_name = '{}-{}'.format(test_name, call_number)
     return test_name
 
 
