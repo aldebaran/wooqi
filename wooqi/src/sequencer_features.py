@@ -164,6 +164,7 @@ def filter_order_tests(config, items):
                                            'iter_number': iter_number}
 
     # Link test_name with the function
+    pytest_test_to_remove = []
     for item in items:
         if item.name in pytest_tests:
             pytest_tests[item.name]['item'] = item
@@ -178,6 +179,34 @@ def filter_order_tests(config, items):
             if 'timeout' in file_config[session_name]:
                 pytest_tests[item.name]['item'].add_marker(
                         pytest.mark.timeout(global_var['config'].timeout(session_name)))
+
+        elif 'parametrize' in item.keywords.__dict__["_markers"].keys():
+            for pytest_test in pytest_tests:
+                pytest_base_name = pytest_test.replace(']', '-') if ']' in pytest_test else \
+                    '{}['.format(pytest_test)
+                if pytest_base_name in item.name:
+                    # new name with parameter
+                    pytest_tests[item.name] = dict(pytest_tests[pytest_test])
+
+                    pytest_tests[item.name]['item'] = item
+
+                    session_name = pytest_tests[item.name]['session']
+                    # To manage reruns option
+                    if 'reruns' in file_config[session_name]:
+                        pytest_tests[item.name]['item'].keywords.__dict__["reruns"] = 0
+                        pytest_tests[item.name]['item'].add_marker(
+                            pytest.mark.flaky(reruns=global_var['config'].reruns(session_name)))
+                    # To manage timeout option
+                    if 'timeout' in file_config[session_name]:
+                        pytest_tests[item.name]['item'].add_marker(
+                            pytest.mark.timeout(global_var['config'].timeout(session_name)))
+
+                    pytest_test_to_remove.append(pytest_test)
+                    break
+
+    pytest_test_to_remove = list(set(pytest_test_to_remove))
+    for pytest_test in pytest_test_to_remove:
+        del pytest_tests[pytest_test]
 
     # Check if all action/test defined in the configuration file exist
     for test_name in pytest_tests:

@@ -1,13 +1,5 @@
 #!/bin/bash
 
-RED='\033[0;31m'
-GREEN='\033[0;32m'
-NC='\033[0m'
-export RED
-export GREEN
-export NC
-
-
 testing/postfail_feature/./run_wooqi_postfail_tests.sh
 result1=$?
 
@@ -29,4 +21,8 @@ result6=$?
 testing/range_feature/./run_wooqi_range_tests.sh
 result7=$?
 
-exit $result1 || $result2 || $result3 || $result4 || $result5 || $result6 || $result7
+result=1
+if [ $result1 -eq 0 ] && [ $result2 -eq 0 ] && [ $result3 -eq 0 ] && [ $result4 -eq 0 ] && [ $result5 -eq 0 ] && [ $result6 -eq 0 ] && [ $result7 -eq 0 ];then
+    result=0
+fi
+exit $result

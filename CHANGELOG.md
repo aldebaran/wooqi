@@ -31,6 +31,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - None
 
 ***
+## [4.0.1] - 2019-12-16
+### Fixed
+- Manage parametrize decorator
+
+***
 ## [4.0.0] - 2019-12-13
 ### Added
 - If multiple call of the same test if found, wooqi automatly add '-X' if missing of configuration file
@@ -117,7 +122,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [1.0.0] - 2017-03-29
 *First official release.*
 
-[Unreleased]: https://gitlab.aldebaran.lan/production/wooqi/compare/v2.0.1...master
+[Unreleased]: https://gitlab.aldebaran.lan/production/wooqi/compare/v4.0.1...master
+[4.0.1]: https://gitlab.aldebaran.lan/production/wooqi/compare/v4.0.0...v4.0.1
+[4.0.0]: https://gitlab.aldebaran.lan/production/wooqi/compare/v3.0.0...v4.0.0
+[3.0.0]: https://gitlab.aldebaran.lan/production/wooqi/compare/v2.0.1...v3.0.0
 [2.0.1]: https://gitlab.aldebaran.lan/production/wooqi/compare/v2.0.0...v2.0.1
 [2.0.0]: https://gitlab.aldebaran.lan/production/wooqi/compare/v1.2.2...v2.0.0
 [1.2.2]: https://gitlab.aldebaran.lan/production/wooqi/compare/v1.2.1...v1.2.2
