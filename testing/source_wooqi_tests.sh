@@ -9,14 +9,14 @@ test_wooqi()
     # The wooqi sequence is launched with configuration file path give by the first parameter
     # If the second parameter exists, rerun with --failed-first option to execute the sequence from the first failure
     config_file=testing/$1
-    va=$(wooqi --seq-config ${config_file} --sn wooqi_tests -s)
+    va=$(pytest --seq-config ${config_file} --sn wooqi_tests -s --spec --wooqi)
     echo -e $va | grep --quiet "TEST PASSED"
     if [ $? -eq 0 ];then
         if [ -z "$2" ]; then
             echo -e "- $config_file --> ${GREEN}PASSED${NC}"
             return 0
         else
-            va=$(wooqi --seq-config $config_file --sn wooqi_tests -s --ff)
+            va=$(pytest --seq-config ${config_file} --sn wooqi_tests -s --ff --wooqi --spec)
             echo -e $va | grep --quiet "TEST PASSED"
             if [ $? -eq 0 ];then
                 echo -e "- $config_file --> ${GREEN}PASSED${NC}"

@@ -1,0 +1,41 @@
+import groovy.transform.Field
+
+@Library("lib-groovy-jenkins@master") _
+@Field def node_label = "prodtest-1604"
+
+timestamps {
+    ansiColor('xterm') {
+        node(node_label) {
+            if (env.gitlabBranch != null) {
+                println("Detecting that the job was triggered by a GitLab merge request. Merge from ${env.gitlabBranch} into ${env.gitlabTargetBranch}")
+                env.branch_name = env.gitlabBranch
+            }
+
+            gitCheckout(this, env.branch_name, env.repository_url, "git-ssh")
+            try {
+                gitlabCommitStatus(connection: gitLabConnection('gitlab_connection'), name: env.JOB_NAME) {
+
+                    installingTestsuite(this)
+
+                    stage('Installing Tests Requirements') {
+                        sh('pip install -r requirements_tests.txt')
+                    }
+
+                    stage("Running Tests") {
+                        withEnv(["PYTHONPATH=${env.WORKSPACE}"]) {
+                            sh("./run_wooqi_tests.sh")
+                        }
+                    }
+                }
+            }
+            finally{
+                stage("Archiving Results") {
+                    publishCoverage adapters: [coberturaAdapter('coverage.xml')], sourceFileResolver: sourceFiles('STORE_ALL_BUILD')
+                }
+                if(branch_name == params.badgeable_branch){
+                    createAndUploadBadge.coverage('wooqi')
+                }
+            }
+        }
+    }
+}
