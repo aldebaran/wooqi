@@ -113,6 +113,23 @@ def test_teardown_fixture(fixture_teardown_fail):
     pass
 
 
+class Test_class:
+
+    def test_in_class_1(self, executed_tests, test_result):
+        """
+        test 1 in class
+        """
+        executed_tests.append(1)
+        assert test_result
+
+    def test_in_class_2(self, executed_tests, test_result):
+        """
+        test 2 in class
+        """
+        executed_tests.append(2)
+        assert test_result
+
+
 @pytest.mark.parametrize("params", ["1", "2", "3"])
 def test_parametrize_loop_fail_second_call(params, executed_tests):
     """

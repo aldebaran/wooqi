@@ -253,7 +253,7 @@ def rerun_sequence_since_the_fail(config, items):
         if config.getoption('--seq-config') != sequence_name:
             return
 
-        item_fail_name = file_read.split('::')[1].split('"')[0]
+        item_fail_name = file_read.split('::')[-1].split('"')[0]
         if '[' not in item_fail_name:
             test_failed = item_fail_name
         else:

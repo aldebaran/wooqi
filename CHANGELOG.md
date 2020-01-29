@@ -22,7 +22,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - None
 
 ### Fixed
-- None
+- `sequencer_features.py`: Manage test_required when the failed test was in a class
 
 ### Security
 - None
