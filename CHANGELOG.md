@@ -22,13 +22,18 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - None
 
 ### Fixed
-- `sequencer_features.py`: Manage test_required when the failed test was in a class
+- None
 
 ### Security
 - None
 
 ### Known Issues
 - None
+
+***
+## [4.0.2] - 2020-01-31
+### Fixed
+- `sequencer_features.py`: Manage test_required when the failed test was in a class
 
 ***
 ## [4.0.1] - 2019-12-16
@@ -122,7 +127,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [1.0.0] - 2017-03-29
 *First official release.*
 
-[Unreleased]: https://gitlab.aldebaran.lan/production/wooqi/compare/v4.0.1...master
+[Unreleased]: https://gitlab.aldebaran.lan/production/wooqi/compare/v4.0.2...master
+[4.0.2]: https://gitlab.aldebaran.lan/production/wooqi/compare/v4.0.1...v4.0.2
 [4.0.1]: https://gitlab.aldebaran.lan/production/wooqi/compare/v4.0.0...v4.0.1
 [4.0.0]: https://gitlab.aldebaran.lan/production/wooqi/compare/v3.0.0...v4.0.0
 [3.0.0]: https://gitlab.aldebaran.lan/production/wooqi/compare/v2.0.1...v3.0.0
