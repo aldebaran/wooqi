@@ -1,0 +1,5 @@
+pytest
+pytest-mock
+pytest-sugar
+pytest-cov==2.6.0
+pycodestyle
