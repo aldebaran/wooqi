@@ -36,7 +36,7 @@ setup(
         'pytest11': [
             'wooqi = wooqi.plugin'], 'console_scripts': ['wooqi = wooqi.__main__:main']},
     include_package_data=True,
-    install_requires=["pytest==3.0.5, <=3.2.3", "pytest-rerunfailures==1.0.1",
+    install_requires=["pytest==3.0.5", "pytest-rerunfailures==1.0.1",
                       "pytest-timeout==1.0.0", "pytest-spec==1.0.1"],
     setup_requires=["pytest-runner"],
     test_require=["pytest"],
