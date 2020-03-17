@@ -8,10 +8,13 @@
 Pytest sequencer tests conftest
 """
 import pytest
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 @pytest.fixture(scope="session")
-def executed_tests(request, test_config_parser, logger):
+def executed_tests(request, test_config_parser):
     """
     Analyze executed tests
     """
@@ -30,7 +33,11 @@ def executed_tests(request, test_config_parser, logger):
         logger.info("Executed tests = {}".format(str(executed_tests)))
         logger.info("Required test = {}".format(str(required_list)))
         assert executed_tests == required_list, fail_message
-        logger.info("TEST PASSED")
+
+        # Don't remove this print
+        # print("TEST PASSED") is used by the script testing/source_wooqi_tests.sh to know if
+        # the test sequence is pass or fail
+        print("TEST PASSED")
 
     if request.config.getoption("--ff"):
         mode_tests = 'rerun_tests'

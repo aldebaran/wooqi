@@ -11,7 +11,6 @@ import os
 import time
 import ConfigParser
 import pytest
-from wooqi.src.logger import init_logger
 from wooqi.src import global_var
 
 
@@ -74,77 +73,3 @@ def wooqi_conf():
     else:
         config = None
     return config
-
-
-@pytest.fixture(scope="session")
-def log_folder(serial_number, wooqi_conf, test_time, test_sequence_name):
-    """
-    return the path of the log folder
-    """
-    current_dir = os.getcwd()
-    # Get log configuration from the specific project which is using wooqi
-    if wooqi_conf is not None:
-        if wooqi_conf.has_option("LOGS", "LOGS_DIRECTORY"):
-            # If no specific configuration, default report path is /reports/<SN>/
-            log_conf = wooqi_conf.get("LOGS", "LOGS_DIRECTORY").split()
-        else:
-            log_conf = ["sn"]
-    else:
-        # If no specific configuration, default report path is /reports/<SN>/
-        log_conf = ["sn"]
-
-    if global_var['config'] is not None:
-        # All reports are in reports/ directory
-        folder_path = '{}/reports/'.format(current_dir)
-        if not os.path.isdir(folder_path):
-            os.makedirs(folder_path)
-
-        for item in log_conf:
-            # Add serial number to log directory
-            if item == "sn":
-                folder_path = '{}{}/'.format(folder_path, serial_number)
-                if not os.path.isdir(folder_path):
-                    os.makedirs(folder_path)
-            # Add date to log directory
-            elif item == "date":
-                folder_path = '{}{}/'.format(folder_path, test_time)
-                if not os.path.isdir(folder_path):
-                    os.makedirs(folder_path)
-            # Add sequence file name to log directory
-            elif item == "seq_name":
-                folder_path = '{}{}/'.format(folder_path, test_sequence_name)
-                if not os.path.isdir(folder_path):
-                    os.makedirs(folder_path)
-        return folder_path
-    else:
-        return None
-
-
-@pytest.fixture(scope="session")
-def log_name(serial_number, test_time, test_config):
-    """
-    return the name of the log file
-    """
-    if global_var['config'] is not None:
-        test = os.path.basename(test_config).replace(".ini", "")
-        name = '{}_{}_{}'.format(serial_number, test, test_time)
-        return name
-    else:
-        return None
-
-
-@pytest.fixture(scope="session", autouse=True)
-def logger(log_name, log_folder, request):
-    """
-    Return logger object to create .log file
-    """
-    # -s option is a shortcut for --capture=no
-    if global_var['config'] is not None:
-        console_logger = True if request.config.getoption('--capture') == 'no' else False
-        logger = init_logger(log_name, log_folder, console_logger)
-        logger.debug('=====================================================')
-        logger.debug('================ BEGINNING OF SCRIPT ================')
-        logger.debug('=====================================================')
-        return logger
-    else:
-        return None

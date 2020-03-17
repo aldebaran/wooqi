@@ -5,7 +5,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ***
-## [Unreleased] - XXXXX-XX-XX
+## [unreleased] - YYYY-MM-DD
 ### Enhanced
 - None
 
@@ -20,6 +20,34 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Removed
 - None
+
+### Fixed
+- None
+
+### Security
+- None
+
+### Known Issues
+- None
+
+***
+## [5.0.0] - 2020-02-24
+### Enhanced
+- None
+
+### Added
+- `src/__init__.py`: Add simple logger with package name.
+
+### Changed
+- `plugin_fixtures.py`: Remove log_folder, log_name and logger fixture.
+- `pytest_hooks.py`: Use new logger instead of logger_gv.
+
+### Deprecated
+- None
+
+### Removed
+- `src/__init__.py`: Remove logger_gv.
+- `scr/logger.py`: Remove init_logger method.
 
 ### Fixed
 - None
