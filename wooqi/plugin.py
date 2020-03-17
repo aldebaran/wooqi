@@ -8,12 +8,17 @@
 General plugin file
 """
 import pytest
+import logging
+
 from wooqi.src.plugin_fixtures import test_config_parser, test_sequence_name, test_time
-from wooqi.src.plugin_fixtures import wooqi_conf, log_folder, log_name, logger
+from wooqi.src.plugin_fixtures import wooqi_conf
 from wooqi.src.pytest_hooks import pytest_collection_modifyitems, pytest_runtest_makereport
 from wooqi.src.pytest_hooks import pytest_report_header, pytest_generate_tests
 from wooqi.src.pytest_hooks import pytest_sessionfinish, pytest_unconfigure
 from wooqi.src import global_var
+
+
+logger = logging.getLogger(__name__)
 
 
 def pytest_addoption(parser):
@@ -66,7 +71,7 @@ def wooqi(request):
 
 
 @pytest.fixture()
-def test_name(request, logger):
+def test_name(request):
     """
     Return current test name
     """
@@ -79,7 +84,7 @@ def test_name(request, logger):
 
 
 @pytest.fixture()
-def test_info(request, logger, test_name):
+def test_info(request, test_name):
     """
     Return current test info
     """

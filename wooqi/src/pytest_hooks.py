@@ -9,10 +9,12 @@ Pytest hooks
 """
 import os
 import pytest
+import logging
 from wooqi.src import sequencer_features
 from wooqi.src.config_test import ConfigTest
 from wooqi.src import global_var
-from wooqi.src import logger_gv
+
+logger = logging.getLogger(__name__)
 
 
 def pytest_collection_modifyitems(config, items):
@@ -43,9 +45,9 @@ def pytest_runtest_makereport(item, call):
 
         # Add logs
         if call.when == 'setup':
-            logger_gv.info('{} starts'.format(item.name))
+            logger.info('{} starts'.format(item.name))
             if 'skipped' in result:
-                logger_gv.warning(result)
+                logger.warning(result)
 
         # Manage skip marker, after test called or if test setup failed
         if call.when == 'call' or (call.when == 'setup' and rep.outcome == 'failed'):
@@ -53,14 +55,14 @@ def pytest_runtest_makereport(item, call):
             if "reruns" in item.keywords.__dict__.keys():
                 item.keywords.__dict__["reruns"] = item.keywords.__dict__["reruns"] + 1
             if 'failed' in result:
-                logger_gv.error(result)
+                logger.error(result)
             if 'skipped' in result:
-                logger_gv.warning(result)
+                logger.warning(result)
 
             if 'passed' in result:
-                logger_gv.info(result)
+                logger.info(result)
             elif "reruns" in item.keywords.__dict__.keys():
-                logger_gv.info("rerun {}".format(str(item)))
+                logger.info("rerun {}".format(str(item)))
                 if item.keywords.__dict__["reruns"] == global_var['config'].reruns(test_name) + 1:
                     skip = True
             else:
@@ -71,10 +73,10 @@ def pytest_runtest_makereport(item, call):
 
         # Manage skip marker, when test fail on the teardown
         elif call.when == 'teardown' and rep.outcome == 'failed':
-            logger_gv.error("Test teardown {}".format(result))
+            logger.error("Test teardown {}".format(result))
 
             if "reruns" in item.keywords.__dict__.keys():
-                logger_gv.info("rerun {}".format(str(item)))
+                logger.info("rerun {}".format(str(item)))
                 if item.keywords.__dict__["reruns"] == global_var['config'].reruns(test_name) + 1:
                     skip = True
                 else:
@@ -171,12 +173,10 @@ def pytest_sessionfinish(exitstatus, session):
     whole test run finishes
     """
     if global_var['config'] is not None:
-        if logger_gv.init:
-            logger_gv.debug('global result of the test')
+        logger.debug('global result of the test')
         print("\n")
         if exitstatus == 0:
-            if logger_gv.init:
-                logger_gv.debug('---> passed')
+            logger.debug('---> passed')
             print('\n')
             print('ssssssss       ssss          ssssssss     ssssssss')
             print('ss    ss     ssss ssss       ssssssss     ssssssss')
@@ -188,8 +188,7 @@ def pytest_sessionfinish(exitstatus, session):
             print('ss         sss       sss     ssssssss     ssssssss')
             print('ss         sss       sss     ssssssss     ssssssss')
         else:
-            if logger_gv.init:
-                logger_gv.debug('---> failed')
+            logger.debug('---> failed')
             print('\n')
             print('ssssssss       ssss             sss       s')
             print('ssssssss     ssss ssss          sss       ss')
@@ -201,10 +200,9 @@ def pytest_sessionfinish(exitstatus, session):
             print('ss         sss       sss        sss       ssssssss')
             print('ss         sss       sss        sss       ssssssss')
 
-        if logger_gv.init:
-            logger_gv.debug('===============================================')
-            logger_gv.debug('================ END OF SCRIPT ================')
-            logger_gv.debug('===============================================')
+        logger.debug('===============================================')
+        logger.debug('================ END OF SCRIPT ================')
+        logger.debug('===============================================')
 
 
 def pytest_unconfigure(config):
