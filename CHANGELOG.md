@@ -10,7 +10,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - None
 
 ### Added
-- None
+- `setup.py` `src/conftest.py` `src/logger.py` `src/plugin_fixtures.py`:  Replace ConfigParser by configparser to manage python2 and python3
 
 ### Changed
 - None

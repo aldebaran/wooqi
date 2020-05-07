@@ -11,7 +11,7 @@ import os
 import re
 from sys import exit
 from collections import OrderedDict
-from ConfigParser import SafeConfigParser
+from configparser import SafeConfigParser
 
 
 class MultiDict(OrderedDict):
@@ -66,7 +66,7 @@ class ConfigTest(object):
         # Create dictionary with all section are unique names
         config_file = config_path
         try:
-            parser = SafeConfigParser(dict_type=MultiDict)
+            parser = SafeConfigParser(dict_type=MultiDict, strict=False)
             parser.optionxform = str
             file_parse = parser.read(config_file)
         except KeyError as error:
