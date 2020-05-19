@@ -9,7 +9,7 @@ Wooqi fixtures
 """
 import os
 import time
-import ConfigParser
+from configparser import ConfigParser
 import pytest
 from wooqi.src import global_var
 
@@ -18,7 +18,7 @@ def read_cfg(cfg_file):
     """
     Read config file
     """
-    cfg = ConfigParser.ConfigParser()
+    cfg = ConfigParser(strict=False)
     cfg.read(cfg_file)
     return cfg
 

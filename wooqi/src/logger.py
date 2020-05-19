@@ -8,7 +8,7 @@
 Logger module
 """
 import logging.handlers
-from ConfigParser import NoOptionError, NoSectionError
+from configparser import NoOptionError, NoSectionError
 
 
 class SingleLevelFilter(logging.Filter):
