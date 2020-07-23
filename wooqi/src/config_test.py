@@ -51,7 +51,7 @@ class MultiDict(OrderedDict):
                 self._keys_name_and_params[test_name].append(param)
             else:
                 msg = '{} has multiple call unclear, please verify your configuration file'.format(
-                        test_name)
+                    test_name)
                 print(msg)
                 raise Exception(msg)
 
@@ -84,6 +84,10 @@ class ConfigTest(object):
         list_name = []
         for section in parser.sections():
             items = parser.items(section)
+            # convert unicode to str for items values
+            items_str = {}
+            for key, value in list(dict(items).items()):
+                items_str[key] = '{}'.format(value)
             if section.startswith('test_') or section.startswith('action_'):
                 name, param = section.rsplit(' ', 1)
                 if param == '0' and str(parser.sections()).count('{} '.format(name)) == 1:
@@ -92,11 +96,11 @@ class ConfigTest(object):
                     section = '{}-{}'.format(name, param)
 
                 list_name.append(name)
-                file_config[section] = dict(items)
+                file_config[section] = dict(items_str)
                 file_config[section]['test_order'] = test_number
                 test_number += 1
             else:
-                file_config[section] = dict(items)
+                file_config[section] = dict(items_str)
 
         # Check post_fail option
         file_config_temp = list(file_config)

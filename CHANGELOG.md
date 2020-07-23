@@ -10,7 +10,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - None
 
 ### Added
-- `setup.py` `src/conftest.py` `src/logger.py` `src/plugin_fixtures.py`:  Replace ConfigParser by configparser to manage python2 and python3
 
 ### Changed
 - None
@@ -29,6 +28,15 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Known Issues
 - None
+
+***
+## [5.0.1] - 2020-07-23
+
+### Added
+- `setup.py` `src/conftest.py` `src/logger.py` `src/plugin_fixtures.py`:  Replace ConfigParser by configparser to manage python2 and python3
+
+### Changed
+- `config_test.py`: Change section's values from unicode to str
 
 ***
 ## [5.0.0] - 2020-02-24
