@@ -10,7 +10,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - None
 
 ### Added
-- `setup.py` `src/conftest.py` `src/logger.py` `src/plugin_fixtures.py`:  Replace ConfigParser by configparser to manage python2 and python3
 
 ### Changed
 - None
@@ -29,6 +28,15 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Known Issues
 - None
+
+***
+## [5.0.1] - 2020-07-23
+
+### Added
+- `setup.py` `src/conftest.py` `src/logger.py` `src/plugin_fixtures.py`:  Replace ConfigParser by configparser to manage python2 and python3
+
+### Changed
+- `config_test.py`: Change section's values from unicode to str
 
 ***
 ## [5.0.0] - 2020-02-24
@@ -132,6 +140,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [1.1.0] - 2017-08-30
 ### Enhanced
 - Improve version display.
+
 - [Issue #17](https://gitlab.aldebaran.lan/production/wooqi/issues/17): Keep capital in test_info keys.
 
 ### Added
@@ -139,7 +148,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Changed
 - Split Wooqi tests.
-
 ***
 ## [1.0.2] - 2017-05-18
 ### Fixed
@@ -168,4 +176,4 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 [1.1.0]: https://gitlab.aldebaran.lan/production/wooqi/compare/v1.0.2...v1.1.0
 [1.0.2]: https://gitlab.aldebaran.lan/production/wooqi/compare/v1.0.1...v1.0.2
 [1.0.1]: https://gitlab.aldebaran.lan/production/wooqi/compare/v1.0.0...v1.0.1
-[1.0.0]: https://gitlab.aldebaran.lan/production/wooqi/compare/2bcd8e8d1...v1.0.0
+[1.0.0]: https://gitlab.aldebaran.lan/production/wooqi/compare/2bcd8e8d1...v1.0.: 
