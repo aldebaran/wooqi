@@ -27,7 +27,7 @@ def init_command(args):
         project_name = args[1]
         print(">>> Create a new project '{}' in '{}' ? (y/n)".format(
             project_name, os.path.abspath(".")))
-        answer = raw_input()
+        answer = input()
         if answer == 'y':
             print(">>> Creating project...")
             project_path = os.path.abspath(project_name)
@@ -40,7 +40,8 @@ def init_command(args):
                     def ignore_func(d, files):
                         return [f for f in files if f == '__pycache__' or f.endswith('.pyc')]
 
-                    shutil.copytree(project_template_path, project_path, ignore=ignore_func)
+                    shutil.copytree(project_template_path,
+                                    project_path, ignore=ignore_func)
                 except OSError as e:
                     print("Directory not copied. Error: {}".format(e))
                 print(">>> Project initialization complete.")
