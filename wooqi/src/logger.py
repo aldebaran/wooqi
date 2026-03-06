@@ -7,6 +7,7 @@
 """
 Logger module
 """
+
 import logging.handlers
 from configparser import NoOptionError, NoSectionError
 

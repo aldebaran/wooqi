@@ -6,7 +6,7 @@
 ## Introduction
 
 **Wooqi** is a plugin for the [Python](https://www.python.org) module named
-[pytest](http://pytest.org). It allows to code tests in a very special way. It is a usefull tool to
+[pytest](http://pytest.org). It allows to code tests in a very special way. It is a useful tool to
 manage a big database of tests, as it simplifies their creation, their maintenance, and their
 execution.
 
@@ -30,7 +30,7 @@ tool to execute tests which are written in what we call a **Wooqi project**. In 
 have several **Wooqi projects** on your machine, each one having its own specific features, while
 using only one tool (the **Wooqi** plugin) to execute any test in any project.
 
-For the reasons listed above, Wooqi can be considered as an independant tool instead of a simple
+For the reasons listed above, Wooqi can be considered as an independent tool instead of a simple
 pytest plugin.
 
 ## Installation

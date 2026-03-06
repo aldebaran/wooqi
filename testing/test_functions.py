@@ -114,7 +114,6 @@ def test_teardown_fixture(fixture_teardown_fail):
 
 
 class Test_class:
-
     def test_in_class_1(self, executed_tests, test_result):
         """
         test 1 in class

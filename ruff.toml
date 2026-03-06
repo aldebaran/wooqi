@@ -1,0 +1,8 @@
+line-length = 120
+
+[lint]
+extend-select = ["I"]
+
+[lint.per-file-ignores]
+# Fixtures and hooks imported here are discovered by pytest at collection time
+"wooqi/plugin.py" = ["F401"]

@@ -7,16 +7,21 @@
 """
 General plugin file
 """
-import pytest
+
 import logging
 
-from wooqi.src.plugin_fixtures import test_config_parser, test_sequence_name, test_time
-from wooqi.src.plugin_fixtures import wooqi_conf
-from wooqi.src.pytest_hooks import pytest_collection_modifyitems, pytest_runtest_makereport
-from wooqi.src.pytest_hooks import pytest_report_header, pytest_generate_tests
-from wooqi.src.pytest_hooks import pytest_sessionfinish, pytest_unconfigure
-from wooqi.src import global_var
+import pytest
 
+from wooqi.src import global_var
+from wooqi.src.plugin_fixtures import test_config_parser, test_sequence_name, test_time, wooqi_conf
+from wooqi.src.pytest_hooks import (
+    pytest_collection_modifyitems,
+    pytest_generate_tests,
+    pytest_report_header,
+    pytest_runtest_makereport,
+    pytest_sessionfinish,
+    pytest_unconfigure,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -24,31 +29,21 @@ logger = logging.getLogger(__name__)
 @pytest.fixture
 def _wooqi_id(request):
     """Internal fixture used by wooqi to manage call IDs and loop iterations."""
-    return getattr(request, 'param', None)
+    return getattr(request, "param", None)
 
 
 def pytest_addoption(parser):
     """
     Configuration of pytest parsing
     """
-    group = parser.getgroup('general')
-    group.addoption(
-        "--seq-config",
-        default=None,
-        action="store",
-        help="Test file config"
-    )
-    group.addoption(
-        "--sn",
-        action="store",
-        default="test",
-        help="Sample serial number or name"
-    )
+    group = parser.getgroup("general")
+    group.addoption("--seq-config", default=None, action="store", help="Test file config")
+    group.addoption("--sn", action="store", default="test", help="Sample serial number or name")
     group.addoption(
         "--wooqi",
         action="store_true",
-        dest='wooqi tag',
-        help="wooqi tag to check if the test is runned thanks to wooqi"
+        dest="wooqi tag",
+        help="wooqi tag to check if the test is run thanks to wooqi",
     )
 
 
@@ -71,7 +66,7 @@ def serial_number(request, wooqi):
 @pytest.fixture(scope="session")
 def wooqi(request):
     """
-    Check if the test is runned with wooqi
+    Check if the test is run with wooqi
     """
     return request.config.getoption("--wooqi")
 
@@ -82,10 +77,10 @@ def test_name(request):
     Return current test name
     """
     # test_name according in file_config
-    test_name = request.node.name.split('[')[0]
-    if test_name not in global_var['config'].file_config:
-        call_number = request.node.name.split('[')[1].split('-')[0].replace(']', '')
-        test_name = '{}-{}'.format(test_name, call_number)
+    test_name = request.node.name.split("[")[0]
+    if test_name not in global_var["config"].file_config:
+        call_number = request.node.name.split("[")[1].split("-")[0].replace("]", "")
+        test_name = "{}-{}".format(test_name, call_number)
     return test_name
 
 
@@ -100,8 +95,8 @@ def test_info(request, test_name):
     var = None
     test_dico = {}
     test = request.node.name.split("[")
-    uuts = global_var['config'].uut(test_name)
-    uuts2 = global_var['config'].uut2(test_name)
+    uuts = global_var["config"].uut(test_name)
+    uuts2 = global_var["config"].uut2(test_name)
     if len(test) > 1:
         unit = test[1].replace("]", "")
         if uuts is not None:
@@ -127,12 +122,12 @@ def test_info(request, test_name):
         test_dico["uuts"] = uuts
 
     params = ["time_test", "limit", "comparator", "misc_data", "nb_cycles"]
-    for param in global_var['config'].file_config[test_name]:
+    for param in global_var["config"].file_config[test_name]:
         if param in params:
-            info = getattr(global_var['config'], param)(test_name, uut, uut2)
+            info = getattr(global_var["config"], param)(test_name, uut, uut2)
             if info is not None:
                 test_dico[param] = info
         elif param != "uut" and param != "uut2":
-            test_dico[param] = global_var['config'].file_config[test_name][param]
+            test_dico[param] = global_var["config"].file_config[test_name][param]
     logger.debug(test_dico)
     return test_dico

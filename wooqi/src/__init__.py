@@ -7,7 +7,9 @@
 """
 Define plugin global variable
 """
+
 import logging
+
 import pytest
 
 global_var = {}
