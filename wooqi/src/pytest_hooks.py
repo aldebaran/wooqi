@@ -12,7 +12,7 @@ import pytest
 import logging
 from wooqi.src import sequencer_features
 from wooqi.src.config_test import ConfigTest
-from wooqi.src import global_var
+from wooqi.src import global_var, WOOQI_RERUNS_KEY
 
 logger = logging.getLogger(__name__)
 
@@ -52,8 +52,8 @@ def pytest_runtest_makereport(item, call):
         # Manage skip marker, after test called or if test setup failed
         if call.when == 'call' or (call.when == 'setup' and rep.outcome == 'failed'):
             skip = False
-            if "reruns" in item.keywords.__dict__.keys():
-                item.keywords.__dict__["reruns"] = item.keywords.__dict__["reruns"] + 1
+            if WOOQI_RERUNS_KEY in item.stash:
+                item.stash[WOOQI_RERUNS_KEY] = item.stash[WOOQI_RERUNS_KEY] + 1
             if 'failed' in result:
                 logger.error(result)
             if 'skipped' in result:
@@ -61,9 +61,9 @@ def pytest_runtest_makereport(item, call):
 
             if 'passed' in result:
                 logger.info(result)
-            elif "reruns" in item.keywords.__dict__.keys():
+            elif WOOQI_RERUNS_KEY in item.stash:
                 logger.info("rerun {}".format(str(item)))
-                if item.keywords.__dict__["reruns"] == global_var['config'].reruns(test_name) + 1:
+                if item.stash[WOOQI_RERUNS_KEY] == global_var['config'].reruns(test_name) + 1:
                     skip = True
             else:
                 skip = True
@@ -75,9 +75,9 @@ def pytest_runtest_makereport(item, call):
         elif call.when == 'teardown' and rep.outcome == 'failed':
             logger.error("Test teardown {}".format(result))
 
-            if "reruns" in item.keywords.__dict__.keys():
+            if WOOQI_RERUNS_KEY in item.stash:
                 logger.info("rerun {}".format(str(item)))
-                if item.keywords.__dict__["reruns"] == global_var['config'].reruns(test_name) + 1:
+                if item.stash[WOOQI_RERUNS_KEY] == global_var['config'].reruns(test_name) + 1:
                     skip = True
                 else:
                     skip = False
@@ -123,6 +123,7 @@ def pytest_generate_tests(metafunc):
             uut2_list = []
             sessions = []
             test_id = None
+            call_id_params = []
             for session in file_config:
                 if session.split('-')[0] == test_name:
                     test_used = True
@@ -135,8 +136,8 @@ def pytest_generate_tests(metafunc):
                     if '-' in session:
                         # Overwrite the test name according at configuration file
                         test_id = session.split('-')[1]
-                        # The first addcall only rename the test name
-                        metafunc.addcall(id=test_id)
+                        # Collect call ID (replaces addcall(id=test_id))
+                        call_id_params.append(test_id)
 
             # Test not used
             if not test_used:
@@ -153,12 +154,18 @@ def pytest_generate_tests(metafunc):
                         loop_iter = int(global_var['config'].loop_infos()[1])
                         if test_id is None:
                             for i in range(loop_iter):
-                                metafunc.addcall(id='{}'.format(i))
+                                call_id_params.append('{}'.format(i))
                         else:
                             test_id = session.split('-')[1]
                             for i in range(loop_iter):
-                                metafunc.addcall(id='{}-{}'.format(test_id, i))
+                                call_id_params.append('{}-{}'.format(test_id, i))
                         file_config[session]['wooqi_loop_iter'] = loop_iter
+
+            # Apply call ID parametrize (replaces addcall)
+            if call_id_params:
+                if "_wooqi_id" not in metafunc.fixturenames:
+                    metafunc.fixturenames.append("_wooqi_id")
+                metafunc.parametrize("_wooqi_id", call_id_params, indirect=True)
 
             # Add paramaters uut and uut2
             if uut_list:

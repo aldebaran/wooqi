@@ -21,6 +21,12 @@ from wooqi.src import global_var
 logger = logging.getLogger(__name__)
 
 
+@pytest.fixture
+def _wooqi_id(request):
+    """Internal fixture used by wooqi to manage call IDs and loop iterations."""
+    return getattr(request, 'param', None)
+
+
 def pytest_addoption(parser):
     """
     Configuration of pytest parsing
@@ -76,9 +82,9 @@ def test_name(request):
     Return current test name
     """
     # test_name according in file_config
-    test_name = str(request.node).split("'")[1].split('[')[0]
+    test_name = request.node.name.split('[')[0]
     if test_name not in global_var['config'].file_config:
-        call_number = str(request.node).split("'")[1].split('[')[1].split('-')[0].replace(']', '')
+        call_number = request.node.name.split('[')[1].split('-')[0].replace(']', '')
         test_name = '{}-{}'.format(test_name, call_number)
     return test_name
 
@@ -88,12 +94,12 @@ def test_info(request, test_name):
     """
     Return current test info
     """
-    logger.debug("Get {} infos".format(str(request.node).split("'")[1]))
+    logger.debug("Get {} infos".format(request.node.name))
     uut = None
     uut2 = None
     var = None
     test_dico = {}
-    test = str(request.node).split("'")[1].split("[")
+    test = request.node.name.split("[")
     uuts = global_var['config'].uut(test_name)
     uuts2 = global_var['config'].uut2(test_name)
     if len(test) > 1:

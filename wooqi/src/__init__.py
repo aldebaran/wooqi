@@ -8,6 +8,8 @@
 Define plugin global variable
 """
 import logging
+import pytest
 
 global_var = {}
+WOOQI_RERUNS_KEY = pytest.StashKey[int]()
 logger = logging.getLogger(__package__)

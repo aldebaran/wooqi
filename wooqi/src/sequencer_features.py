@@ -11,7 +11,7 @@ import os
 import time
 import pytest
 from itertools import product
-from wooqi.src import global_var
+from wooqi.src import global_var, WOOQI_RERUNS_KEY
 
 
 def get_uuts(test_name):
@@ -31,7 +31,7 @@ def item_loop_option_analyse(item, test_name, first_arg):
     """
     Return config test name and the iteration number according to loop option
     """
-    if "loop" in item.keywords.__dict__["_markers"].keys():
+    if item.get_closest_marker("loop") is not None:
         # Test defined one time in config file
         if global_var['config'].exist(test_name):
             iter_number = int(first_arg)
@@ -172,7 +172,7 @@ def filter_order_tests(config, items):
             session_name = pytest_tests[item.name]['session']
             # To manage reruns option
             if 'reruns' in file_config[session_name]:
-                pytest_tests[item.name]['item'].keywords.__dict__["reruns"] = 0
+                pytest_tests[item.name]['item'].stash[WOOQI_RERUNS_KEY] = 0
                 pytest_tests[item.name]['item'].add_marker(
                         pytest.mark.flaky(reruns=global_var['config'].reruns(session_name)))
             # To manage timeout option
@@ -180,7 +180,7 @@ def filter_order_tests(config, items):
                 pytest_tests[item.name]['item'].add_marker(
                         pytest.mark.timeout(global_var['config'].timeout(session_name)))
 
-        elif 'parametrize' in item.keywords.__dict__["_markers"].keys():
+        elif item.get_closest_marker("parametrize") is not None:
             for pytest_test in pytest_tests:
                 pytest_base_name = pytest_test.replace(']', '-') if ']' in pytest_test else \
                     '{}['.format(pytest_test)
@@ -193,7 +193,7 @@ def filter_order_tests(config, items):
                     session_name = pytest_tests[item.name]['session']
                     # To manage reruns option
                     if 'reruns' in file_config[session_name]:
-                        pytest_tests[item.name]['item'].keywords.__dict__["reruns"] = 0
+                        pytest_tests[item.name]['item'].stash[WOOQI_RERUNS_KEY] = 0
                         pytest_tests[item.name]['item'].add_marker(
                             pytest.mark.flaky(reruns=global_var['config'].reruns(session_name)))
                     # To manage timeout option
