@@ -8,9 +8,10 @@
 wooqi entry point
 """
 
-import sys
 import os
 import shutil
+import sys
+
 from wooqi import __version__
 
 
@@ -19,26 +20,24 @@ def init_command(args):
     Manage the `wooqi init` command
     """
     print("***************************************")
-    print("***** Initiliazing Wooqi project ******")
+    print("***** Initializing Wooqi project ******")
     print("***************************************\n")
     if not len(args) > 1:
         print("[ERROR] usage: wooqi --init-project my_project_name")
     else:
         project_name = args[1]
-        print(">>> Create a new project '{}' in '{}' ? (y/n)".format(
-            project_name, os.path.abspath(".")))
-        answer = raw_input()
-        if answer == 'y':
+        print(">>> Create a new project '{}' in '{}' ? (y/n)".format(project_name, os.path.abspath(".")))
+        answer = input()
+        if answer == "y":
             print(">>> Creating project...")
             project_path = os.path.abspath(project_name)
             if not os.path.isdir(project_path):
                 try:
-                    project_template_path = os.path.abspath(os.path.join(os.path.dirname(__file__),
-                                                                         "project_template"))
+                    project_template_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "project_template"))
 
                     # ignore files with '.pyc' extension and ignore '__pycache__' directory
                     def ignore_func(d, files):
-                        return [f for f in files if f == '__pycache__' or f.endswith('.pyc')]
+                        return [f for f in files if f == "__pycache__" or f.endswith(".pyc")]
 
                     shutil.copytree(project_template_path, project_path, ignore=ignore_func)
                 except OSError as e:
@@ -58,7 +57,7 @@ def print_usage():
 ***** Wooqi tests sequencer *****
 *********************************
 
---- Independant commands -------------------------------------------------------
+--- Independent commands -------------------------------------------------------
     wooqi [args]
         --init-project XXXX     Initialize a Wooqi project named XXXX,
                                 creating all necessary directories and files.
@@ -95,7 +94,7 @@ def main(args=None):
     elif "--version" in args or "-v" in args:
         print(__version__)
     elif "--init-project" in args:
-        init_command(args[args.index('--init-project'):])
+        init_command(args[args.index("--init-project") :])
     elif "--seq-config" in args:
         if "--ff" not in args and "--lf" not in args:
             args.append("--cache-clear")
@@ -117,5 +116,5 @@ def main(args=None):
         exit(-1)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     sys.exit(main())

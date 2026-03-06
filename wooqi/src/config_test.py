@@ -7,11 +7,12 @@
 """
 TestConfig Class
 """
+
 import os
 import re
-from sys import exit
 from collections import OrderedDict
-from configparser import SafeConfigParser
+from configparser import ConfigParser
+from sys import exit
 
 
 class MultiDict(OrderedDict):
@@ -20,21 +21,21 @@ class MultiDict(OrderedDict):
     Add _X of sections name, with X depently the number of call
     """
 
-    _keys_name_and_params = {}    # class variable
+    _keys_name_and_params = {}  # class variable
 
     def __setitem__(self, key, val):
-        if isinstance(val, dict) and (key.startswith('test_') or key.startswith('action_')):
-            if key.count('-') > 1:
-                msg = '{} is not compatible name: too much -'.format(key)
+        if isinstance(val, dict) and (key.startswith("test_") or key.startswith("action_")):
+            if key.count("-") > 1:
+                msg = "{} is not compatible name: too much -".format(key)
                 print(msg)
                 raise Exception(msg)
 
             try:
-                test_name, param = key.split('-')
+                test_name, param = key.split("-")
                 try:
                     param = int(param)
                 except ValueError:
-                    msg = '{} is not compatible name: Value after - must be integer'.format(key)
+                    msg = "{} is not compatible name: Value after - must be integer".format(key)
                     print(msg)
                     raise Exception(msg)
             # No param found
@@ -50,27 +51,26 @@ class MultiDict(OrderedDict):
             elif param not in self._keys_name_and_params[test_name]:
                 self._keys_name_and_params[test_name].append(param)
             else:
-                msg = '{} has multiple call unclear, please verify your configuration file'.format(
-                    test_name)
+                msg = "{} has multiple call unclear, please verify your configuration file".format(test_name)
                 print(msg)
                 raise Exception(msg)
 
-            key = '{} {}'.format(test_name, param)
+            key = "{} {}".format(test_name, param)
         OrderedDict.__setitem__(self, key, val)
 
 
 class ConfigTest(object):
-    """ Config Class """
+    """Config Class"""
 
     def __init__(self, config_path):
         # Create dictionary with all section are unique names
         config_file = config_path
         try:
-            parser = SafeConfigParser(dict_type=MultiDict, strict=False)
+            parser = ConfigParser(dict_type=MultiDict, strict=False)
             parser.optionxform = str
             file_parse = parser.read(config_file)
         except KeyError as error:
-            msg = 'Problem while parsing configuration file {}: {}'.format(config_file, error)
+            msg = "Problem while parsing configuration file {}: {}".format(config_file, error)
             print(msg)
             raise Exception(msg)
         if len(file_parse):
@@ -87,17 +87,17 @@ class ConfigTest(object):
             # convert unicode to str for items values
             items_str = {}
             for key, value in list(dict(items).items()):
-                items_str[key] = '{}'.format(value)
-            if section.startswith('test_') or section.startswith('action_'):
-                name, param = section.rsplit(' ', 1)
-                if param == '0' and str(parser.sections()).count('{} '.format(name)) == 1:
+                items_str[key] = "{}".format(value)
+            if section.startswith("test_") or section.startswith("action_"):
+                name, param = section.rsplit(" ", 1)
+                if param == "0" and str(parser.sections()).count("{} ".format(name)) == 1:
                     section = name
                 else:
-                    section = '{}-{}'.format(name, param)
+                    section = "{}-{}".format(name, param)
 
                 list_name.append(name)
                 file_config[section] = dict(items_str)
-                file_config[section]['test_order'] = test_number
+                file_config[section]["test_order"] = test_number
                 test_number += 1
             else:
                 file_config[section] = dict(items_str)
@@ -106,57 +106,56 @@ class ConfigTest(object):
         file_config_temp = list(file_config)
         for test_name in file_config:
             file_config_temp.remove(test_name)
-            if 'post_fail' in file_config[test_name]:
-                post_fail = file_config[test_name]['post_fail']
-                if post_fail.lower() != 'next_step' and post_fail not in file_config_temp:
-                    msg = 'Problem with post_fail option, {} not found'.format(post_fail)
+            if "post_fail" in file_config[test_name]:
+                post_fail = file_config[test_name]["post_fail"]
+                if post_fail.lower() != "next_step" and post_fail not in file_config_temp:
+                    msg = "Problem with post_fail option, {} not found".format(post_fail)
                     print(msg)
                     raise Exception(msg)
 
         # Check loop option
         try:
-            loop_tests = file_config['test_info']['loop_tests']
+            loop_tests = file_config["test_info"]["loop_tests"]
         except KeyError:
             loop_tests = None
         if loop_tests:
-            loop_tests = loop_tests.split('|')
+            loop_tests = loop_tests.split("|")
             if len(loop_tests) != 2:
-                msg = 'Problem with loop option, please verify format: ' \
-                    'loop_tests=test_NAME1|test_NAME2'
+                msg = "Problem with loop option, please verify format: loop_tests=test_NAME1|test_NAME2"
                 print(msg)
                 raise Exception(msg)
-            msg = ''
+            msg = ""
             if loop_tests[0] not in file_config.keys():
-                msg += '{} '.format(loop_tests[0])
+                msg += "{} ".format(loop_tests[0])
             if loop_tests[1] not in file_config.keys():
-                msg += '{} '.format(loop_tests[1])
+                msg += "{} ".format(loop_tests[1])
             if msg:
-                msg += 'tests not found for loop option'
+                msg += "tests not found for loop option"
                 print(msg)
                 raise Exception(msg)
             try:
-                loop_iter = int(file_config['test_info']['loop_iter'])
-                file_config['test_info']['loop_iter'] = loop_iter
+                loop_iter = int(file_config["test_info"]["loop_iter"])
+                file_config["test_info"]["loop_iter"] = loop_iter
             except Exception:
-                msg = 'Loop option is enable but loop_iter parameter is not correctly create'
+                msg = "Loop option is enable but loop_iter parameter is not correctly create"
                 print(msg)
                 raise Exception(msg)
 
             # Add the iteration number
-            loop_start_order = file_config[loop_tests[0]]['test_order']
-            loop_stop_order = file_config[loop_tests[1]]['test_order']
+            loop_start_order = file_config[loop_tests[0]]["test_order"]
+            loop_stop_order = file_config[loop_tests[1]]["test_order"]
             for session in file_config:
-                if 'test_order' in file_config[session]:
-                    test_order = file_config[session]['test_order']
+                if "test_order" in file_config[session]:
+                    test_order = file_config[session]["test_order"]
                     if loop_start_order <= test_order <= loop_stop_order:
-                        file_config[session]['wooqi_loop_iter'] = loop_iter
+                        file_config[session]["wooqi_loop_iter"] = loop_iter
 
         self.file_config = file_config
 
     @staticmethod
-    def _get_paramater(param, uut, uut2, evaluate=True):
+    def _get_parameter(param, uut, uut2, evaluate=True):
         """
-        Get paramater
+        Get parameter
         """
         parameter = None
         try:
@@ -220,7 +219,7 @@ class ConfigTest(object):
                 index_1 = index
             elif each == ")":
                 index_2 = index
-        root_dir = string[index_1 + 1:index_2]
+        root_dir = string[index_1 + 1 : index_2]
         if os.path.isdir(root_dir):
             elements = []
             for current_folder, subdirectories, files in os.walk(root_dir):
@@ -244,10 +243,12 @@ class ConfigTest(object):
                 index_1 = index
             elif each == ")":
                 index_2 = index
-        folder_path = string[index_1 + 1:index_2]
+        folder_path = string[index_1 + 1 : index_2]
         if os.path.isdir(folder_path):
-            elements = map(os.path.abspath, ['{}/{}'.format(folder_path, s)
-                                             for s in os.listdir(folder_path)])
+            elements = map(
+                os.path.abspath,
+                ["{}/{}".format(folder_path, s) for s in os.listdir(folder_path)],
+            )
             return elements
         else:
             exit("Folder parameter in 'uut' is not a valid directory.")
@@ -256,10 +257,9 @@ class ConfigTest(object):
         """
         Get loop infos
         """
-        if 'test_info' in self.file_config.keys() and \
-                "loop_tests" in self.file_config['test_info']:
-            loop_tests = self.file_config['test_info']['loop_tests'].split("|")
-            loop_iter = self.file_config['test_info']['loop_iter']
+        if "test_info" in self.file_config.keys() and "loop_tests" in self.file_config["test_info"]:
+            loop_tests = self.file_config["test_info"]["loop_tests"].split("|")
+            loop_iter = self.file_config["test_info"]["loop_iter"]
             return loop_tests, loop_iter
         else:
             return None
@@ -269,8 +269,8 @@ class ConfigTest(object):
         Misc data parameter
         """
         if "misc_data" in self.file_config[test_name]:
-            misc_data = self.file_config[test_name]['misc_data']
-            return self._get_paramater(misc_data, uut, uut2)
+            misc_data = self.file_config[test_name]["misc_data"]
+            return self._get_parameter(misc_data, uut, uut2)
         else:
             return None
 
@@ -279,8 +279,8 @@ class ConfigTest(object):
         Comparator parameter
         """
         if "comparator" in self.file_config[test_name]:
-            comparator = self.file_config[test_name]['comparator']
-            return self._get_paramater(comparator, uut, uut2, evaluate=False)
+            comparator = self.file_config[test_name]["comparator"]
+            return self._get_parameter(comparator, uut, uut2, evaluate=False)
         else:
             return "=="
 
@@ -289,8 +289,8 @@ class ConfigTest(object):
         Limit parameter
         """
         if "limit" in self.file_config[test_name]:
-            limit = self.file_config[test_name]['limit']
-            return self._get_paramater(limit, uut, uut2)
+            limit = self.file_config[test_name]["limit"]
+            return self._get_parameter(limit, uut, uut2)
         else:
             return None
 
@@ -299,8 +299,8 @@ class ConfigTest(object):
         Time parameter
         """
         if "time_test" in self.file_config[test_name]:
-            time_test = self.file_config[test_name]['time_test']
-            return self._get_paramater(time_test, uut, uut2)
+            time_test = self.file_config[test_name]["time_test"]
+            return self._get_parameter(time_test, uut, uut2)
         else:
             return None
 
@@ -309,8 +309,8 @@ class ConfigTest(object):
         Cycles number parameter
         """
         if "nb_cycles" in self.file_config[test_name]:
-            time_test = self.file_config[test_name]['nb_cycles']
-            return self._get_paramater(time_test, uut, uut2)
+            time_test = self.file_config[test_name]["nb_cycles"]
+            return self._get_parameter(time_test, uut, uut2)
         else:
             return None
 
@@ -325,7 +325,7 @@ class ConfigTest(object):
         Order parameter
         """
         try:
-            order = int(self.file_config[test_name]['test_order'])
+            order = int(self.file_config[test_name]["test_order"])
         except Exception:
             order = 0
         return order
@@ -335,7 +335,7 @@ class ConfigTest(object):
         uut parameter
         """
         try:
-            values = self.file_config[test_name]['uut']
+            values = self.file_config[test_name]["uut"]
             if "range" in values:
                 return self._get_range(values)
             elif "recurse_folders" in values:
@@ -353,7 +353,7 @@ class ConfigTest(object):
         uut2 parameter
         """
         try:
-            values = self.file_config[test_name]['uut2']
+            values = self.file_config[test_name]["uut2"]
             if "range" in values:
                 return self._get_range(values)
             elif "recurse_folders" in values:
@@ -371,7 +371,7 @@ class ConfigTest(object):
         """
         try:
             if "post_fail" in self.file_config[test_name]:
-                post_fail = str(self.file_config[test_name]['post_fail'])
+                post_fail = str(self.file_config[test_name]["post_fail"])
                 return post_fail
             else:
                 return None
@@ -384,7 +384,7 @@ class ConfigTest(object):
         """
         try:
             if "reruns" in self.file_config[test_name]:
-                reruns = int(self.file_config[test_name]['reruns'])
+                reruns = int(self.file_config[test_name]["reruns"])
                 return reruns
             else:
                 return None
@@ -397,7 +397,7 @@ class ConfigTest(object):
         """
         try:
             if "timeout" in self.file_config[test_name]:
-                timeout = int(self.file_config[test_name]['timeout'])
+                timeout = int(self.file_config[test_name]["timeout"])
                 return timeout
             else:
                 return None
@@ -410,7 +410,7 @@ class ConfigTest(object):
          Return None if test not is in sequence
         """
         try:
-            sequence = self.file_config[test_name]['sequence']
+            sequence = self.file_config[test_name]["sequence"]
             return sequence
         except Exception:
             return None

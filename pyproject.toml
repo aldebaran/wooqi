@@ -1,0 +1,67 @@
+[build-system]
+requires = ["setuptools>=61", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "wooqi"
+version = "5.0.2"
+description = "Pytest plugin allowing to parametrize all the test sequence thanks to a config file"
+readme = "README.md"
+license = { text = "BSD-3" }
+requires-python = ">=3.10"
+dependencies = [
+    "pytest>=7.0",
+    "pytest-rerunfailures>=13.0",
+    "pytest-timeout>=2.0",
+    "pytest-spec>=3.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/aldebaran/wooqi"
+Download = "https://pypi.org/project/wooqi/"
+
+[project.entry-points."pytest11"]
+wooqi = "wooqi.plugin"
+
+[project.scripts]
+wooqi = "wooqi.__main__:main"
+
+[tool.setuptools.packages.find]
+where = ["."]
+
+[tool.setuptools.package-data]
+"*" = ["src/logger.cfg", "project_template/**/*"]
+
+[tool.pytest.ini_options]
+addopts = "--tb=line -v"
+python_files = ["actions_*.py", "test_*.py"]
+python_functions = ["action_*", "test_*"]
+
+[tool.semantic_release]
+version_toml = ["pyproject.toml:project.version"]
+version_variables = ["wooqi/__init__.py:__version__"]
+branch = "master"
+changelog_file = "CHANGELOG.md"
+build_command = "pip install build && python -m build"
+
+[tool.semantic_release.commit_parser_options]
+allowed_tags = ["feat", "fix", "perf", "refactor", "docs", "style", "test", "chore", "build", "ci"]
+minor_tags = ["feat"]
+patch_tags = ["fix", "perf"]
+
+[tool.semantic_release.remote]
+type = "github"
+
+[tool.semantic_release.publish]
+dist_glob_patterns = ["dist/*"]
+upload_to_vcs_release = true
+
+[tool.ruff]
+line-length = 120
+
+[tool.ruff.lint]
+extend-select = ["I"]
+
+[tool.ruff.lint.per-file-ignores]
+# Fixtures and hooks imported here are discovered by pytest at collection time
+"wooqi/plugin.py" = ["F401"]

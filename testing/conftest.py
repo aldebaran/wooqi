@@ -7,8 +7,10 @@
 """
 Pytest sequencer tests conftest
 """
-import pytest
+
 import logging
+
+import pytest
 
 logger = logging.getLogger(__name__)
 
@@ -25,10 +27,9 @@ def executed_tests(request, test_config_parser):
         Analyze list
         """
         required_list = []
-        required_list = [int(x) for x in test_config_parser.get(
-            "Result", mode_tests).split(",")]
+        required_list = [int(x) for x in test_config_parser.get("Result", mode_tests).split(",")]
         test_name = test_config_parser.get("Result", "test_name")
-        fail_message = '{} failed'.format(test_name)
+        fail_message = "{} failed".format(test_name)
         logger.info(test_name)
         logger.info("Executed tests = {}".format(str(executed_tests)))
         logger.info("Required test = {}".format(str(required_list)))
@@ -40,9 +41,9 @@ def executed_tests(request, test_config_parser):
         print("TEST PASSED")
 
     if request.config.getoption("--ff"):
-        mode_tests = 'rerun_tests'
+        mode_tests = "rerun_tests"
     else:
-        mode_tests = 'executed_tests'
+        mode_tests = "executed_tests"
     request.addfinalizer(analyze_result)
     return executed_tests
 
@@ -77,7 +78,9 @@ def fixture_teardown_fail(request):
     """
     Fixture teardown fail
     """
+
     def end():
         error = "Fixture teardown fail"
         pytest.fail(error)
+
     request.addfinalizer(end)

@@ -7,12 +7,14 @@
 """
 Pytest hooks
 """
-import os
-import pytest
+
 import logging
-from wooqi.src import sequencer_features
+import os
+
+import pytest
+
+from wooqi.src import WOOQI_RERUNS_KEY, global_var, sequencer_features
 from wooqi.src.config_test import ConfigTest
-from wooqi.src import global_var
 
 logger = logging.getLogger(__name__)
 
@@ -22,7 +24,7 @@ def pytest_collection_modifyitems(config, items):
     Called after collection has been performed, filter and re-order
     the items in-place, and create global variable
     """
-    if global_var['config'] is not None:
+    if global_var["config"] is not None:
         # Filter and re-order tests
         sequencer_features.filter_order_tests(config, items)
 
@@ -34,36 +36,36 @@ def pytest_runtest_makereport(item, call):
     """
     outcome = yield
     rep = outcome.get_result()
-    if global_var['config'] is not None:
-        result = 'Result : {}'.format(rep.outcome)
+    if global_var["config"] is not None:
+        result = "Result : {}".format(rep.outcome)
 
         # test_name according in file_config
-        test_name = item.name.split('[')[0]
-        if test_name not in global_var['config'].file_config:
-            call_number = item.name.split('[')[1].split('-')[0].replace(']', '')
-            test_name = '{}-{}'.format(test_name, call_number)
+        test_name = item.name.split("[")[0]
+        if test_name not in global_var["config"].file_config:
+            call_number = item.name.split("[")[1].split("-")[0].replace("]", "")
+            test_name = "{}-{}".format(test_name, call_number)
 
         # Add logs
-        if call.when == 'setup':
-            logger.info('{} starts'.format(item.name))
-            if 'skipped' in result:
+        if call.when == "setup":
+            logger.info("{} starts".format(item.name))
+            if "skipped" in result:
                 logger.warning(result)
 
         # Manage skip marker, after test called or if test setup failed
-        if call.when == 'call' or (call.when == 'setup' and rep.outcome == 'failed'):
+        if call.when == "call" or (call.when == "setup" and rep.outcome == "failed"):
             skip = False
-            if "reruns" in item.keywords.__dict__.keys():
-                item.keywords.__dict__["reruns"] = item.keywords.__dict__["reruns"] + 1
-            if 'failed' in result:
+            if WOOQI_RERUNS_KEY in item.stash:
+                item.stash[WOOQI_RERUNS_KEY] = item.stash[WOOQI_RERUNS_KEY] + 1
+            if "failed" in result:
                 logger.error(result)
-            if 'skipped' in result:
+            if "skipped" in result:
                 logger.warning(result)
 
-            if 'passed' in result:
+            if "passed" in result:
                 logger.info(result)
-            elif "reruns" in item.keywords.__dict__.keys():
+            elif WOOQI_RERUNS_KEY in item.stash:
                 logger.info("rerun {}".format(str(item)))
-                if item.keywords.__dict__["reruns"] == global_var['config'].reruns(test_name) + 1:
+                if item.stash[WOOQI_RERUNS_KEY] == global_var["config"].reruns(test_name) + 1:
                     skip = True
             else:
                 skip = True
@@ -72,12 +74,12 @@ def pytest_runtest_makereport(item, call):
             sequencer_features.postfail_feature_management(item, skip)
 
         # Manage skip marker, when test fail on the teardown
-        elif call.when == 'teardown' and rep.outcome == 'failed':
+        elif call.when == "teardown" and rep.outcome == "failed":
             logger.error("Test teardown {}".format(result))
 
-            if "reruns" in item.keywords.__dict__.keys():
+            if WOOQI_RERUNS_KEY in item.stash:
                 logger.info("rerun {}".format(str(item)))
-                if item.keywords.__dict__["reruns"] == global_var['config'].reruns(test_name) + 1:
+                if item.stash[WOOQI_RERUNS_KEY] == global_var["config"].reruns(test_name) + 1:
                     skip = True
                 else:
                     skip = False
@@ -93,20 +95,20 @@ def pytest_report_header(config):
     Beginning of the test
     """
     if config.getoption("--seq-config") is not None and config.getoption("--wooqi") is True:
-        global_var['config'] = ConfigTest(config.getoption("--seq-config"))
-        if global_var['config'].config_file_exists is False:
+        global_var["config"] = ConfigTest(config.getoption("--seq-config"))
+        if global_var["config"].config_file_exists is False:
             print("\n")
             print("*****************************************************************")
             print("-- ERROR --")
-            print("The config file {} doesn't exist".format(config.getoption('--seq-config')))
+            print("The config file {} doesn't exist".format(config.getoption("--seq-config")))
             print("*****************************************************************")
             print("\n")
 
-        global_var['result'] = True
+        global_var["result"] = True
         if config.option.verbose > 0:
             return [""]
     else:
-        global_var['config'] = None
+        global_var["config"] = None
 
 
 def pytest_generate_tests(metafunc):
@@ -114,53 +116,59 @@ def pytest_generate_tests(metafunc):
     Generate test options
     """
     test_name = metafunc.function.__name__
-    if global_var['config'] is not None:
-        file_config = global_var['config'].file_config
-        if test_name.startswith('test_') or test_name.startswith('action_'):
-
+    if global_var["config"] is not None:
+        file_config = global_var["config"].file_config
+        if test_name.startswith("test_") or test_name.startswith("action_"):
             test_used = False
             uut_list = []
             uut2_list = []
             sessions = []
             test_id = None
+            call_id_params = []
             for session in file_config:
-                if session.split('-')[0] == test_name:
+                if session.split("-")[0] == test_name:
                     test_used = True
                     sessions.append(session)
-                    # Manage paramaters
+                    # Manage parameters
                     uuts, uuts2 = sequencer_features.get_uuts(session)
                     uut_list += uuts
                     uut2_list += uuts2
 
-                    if '-' in session:
+                    if "-" in session:
                         # Overwrite the test name according at configuration file
-                        test_id = session.split('-')[1]
-                        # The first addcall only rename the test name
-                        metafunc.addcall(id=test_id)
+                        test_id = session.split("-")[1]
+                        # Collect call ID (replaces addcall(id=test_id))
+                        call_id_params.append(test_id)
 
             # Test not used
             if not test_used:
                 return
 
             # Manage loop option
-            if global_var['config'].loop_infos():
+            if global_var["config"].loop_infos():
                 for session in sessions:
-                    loop_start, loop_stop = global_var['config'].loop_infos()[0]
-                    loop_start_order = file_config[loop_start]['test_order']
-                    loop_stop_order = file_config[loop_stop]['test_order']
-                    test_order = file_config[session]['test_order']
+                    loop_start, loop_stop = global_var["config"].loop_infos()[0]
+                    loop_start_order = file_config[loop_start]["test_order"]
+                    loop_stop_order = file_config[loop_stop]["test_order"]
+                    test_order = file_config[session]["test_order"]
                     if loop_start_order <= test_order <= loop_stop_order:
-                        loop_iter = int(global_var['config'].loop_infos()[1])
+                        loop_iter = int(global_var["config"].loop_infos()[1])
                         if test_id is None:
                             for i in range(loop_iter):
-                                metafunc.addcall(id='{}'.format(i))
+                                call_id_params.append("{}".format(i))
                         else:
-                            test_id = session.split('-')[1]
+                            test_id = session.split("-")[1]
                             for i in range(loop_iter):
-                                metafunc.addcall(id='{}-{}'.format(test_id, i))
-                        file_config[session]['wooqi_loop_iter'] = loop_iter
+                                call_id_params.append("{}-{}".format(test_id, i))
+                        file_config[session]["wooqi_loop_iter"] = loop_iter
 
-            # Add paramaters uut and uut2
+            # Apply call ID parametrize (replaces addcall)
+            if call_id_params:
+                if "_wooqi_id" not in metafunc.fixturenames:
+                    metafunc.fixturenames.append("_wooqi_id")
+                metafunc.parametrize("_wooqi_id", call_id_params, indirect=True)
+
+            # Add parameters uut and uut2
             if uut_list:
                 metafunc.function.__dict__["uut"] = True
                 metafunc.parametrize("uut", list(set(uut_list)))
@@ -172,52 +180,52 @@ def pytest_sessionfinish(exitstatus, session):
     """
     whole test run finishes
     """
-    if global_var['config'] is not None:
-        logger.debug('global result of the test')
+    if global_var["config"] is not None:
+        logger.debug("global result of the test")
         print("\n")
         if exitstatus == 0:
-            logger.debug('---> passed')
-            print('\n')
-            print('ssssssss       ssss          ssssssss     ssssssss')
-            print('ss    ss     ssss ssss       ssssssss     ssssssss')
-            print('ss    ss    ssss   ssss      ss           ss')
-            print('ss    ss   sssss   sssss     ss           ss')
-            print('ssssssss   sssssssssssss     ssssssss     ssssssss')
-            print('ss         sss       sss           ss           ss')
-            print('ss         sss       sss           ss           ss')
-            print('ss         sss       sss     ssssssss     ssssssss')
-            print('ss         sss       sss     ssssssss     ssssssss')
+            logger.debug("---> passed")
+            print("\n")
+            print("ssssssss       ssss          ssssssss     ssssssss")
+            print("ss    ss     ssss ssss       ssssssss     ssssssss")
+            print("ss    ss    ssss   ssss      ss           ss")
+            print("ss    ss   sssss   sssss     ss           ss")
+            print("ssssssss   sssssssssssss     ssssssss     ssssssss")
+            print("ss         sss       sss           ss           ss")
+            print("ss         sss       sss           ss           ss")
+            print("ss         sss       sss     ssssssss     ssssssss")
+            print("ss         sss       sss     ssssssss     ssssssss")
         else:
-            logger.debug('---> failed')
-            print('\n')
-            print('ssssssss       ssss             sss       s')
-            print('ssssssss     ssss ssss          sss       ss')
-            print('sss         ssss   ssss         sss       ss')
-            print('sss        sssss   sssss        sss       ss')
-            print('ssssssss   sssssssssssss        sss       ss')
-            print('ssssssss   sss       sss        sss       ss')
-            print('ss         sss       sss        sss       ss')
-            print('ss         sss       sss        sss       ssssssss')
-            print('ss         sss       sss        sss       ssssssss')
+            logger.debug("---> failed")
+            print("\n")
+            print("ssssssss       ssss             sss       s")
+            print("ssssssss     ssss ssss          sss       ss")
+            print("sss         ssss   ssss         sss       ss")
+            print("sss        sssss   sssss        sss       ss")
+            print("ssssssss   sssssssssssss        sss       ss")
+            print("ssssssss   sss       sss        sss       ss")
+            print("ss         sss       sss        sss       ss")
+            print("ss         sss       sss        sss       ssssssss")
+            print("ss         sss       sss        sss       ssssssss")
 
-        logger.debug('===============================================')
-        logger.debug('================ END OF SCRIPT ================')
-        logger.debug('===============================================')
+        logger.debug("===============================================")
+        logger.debug("================ END OF SCRIPT ================")
+        logger.debug("===============================================")
 
 
 def pytest_unconfigure(config):
     """
     Copy cache file generate by pytest in new file with serial and config file
     """
-    cache_path = os.path.abspath('.cache/v/cache/lastfailed')
+    cache_path = os.path.abspath(".cache/v/cache/lastfailed")
     if os.path.isfile(cache_path):
-        lastfailed_file = open(cache_path, 'r')
+        lastfailed_file = open(cache_path, "r")
         text = lastfailed_file.read()
         lastfailed_file.close()
 
-        text_insert = '{}\n'.format(config.getoption('--seq-config'))
-        serial_number = config.getoption('--sn')
-        cache_path = os.path.abspath('.cache/v/cache/{}'.format(serial_number))
-        cache_file = open(cache_path, 'w')
-        cache_file.write('{}{}'.format(text_insert, text))
+        text_insert = "{}\n".format(config.getoption("--seq-config"))
+        serial_number = config.getoption("--sn")
+        cache_path = os.path.abspath(".cache/v/cache/{}".format(serial_number))
+        cache_file = open(cache_path, "w")
+        cache_file.write("{}{}".format(text_insert, text))
         cache_file.close()
